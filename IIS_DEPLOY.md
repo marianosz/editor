@@ -1,12 +1,12 @@
 # IIS Deploy (Subsitio) + Jenkins CD
 
-Guía para desplegar este editor en **IIS como subsitio** (ej: `/editor3d`) usando Jenkins como CD.
+Guía para desplegar este editor en **IIS como subsitio** (ej: `/3d-editor`) usando Jenkins como CD.
 
 ## 1) Arquitectura recomendada
 
 - IIS sirve como **reverse proxy**.
 - La app Next.js corre en un proceso Node local (ej: `127.0.0.1:3010`).
-- IIS publica el subsitio `/editor3d` y reenvía tráfico al proceso Node.
+- IIS publica el subsitio `/3d-editor` y reenvía tráfico al proceso Node.
 
 > Recomendado sobre `iisnode` por estabilidad operativa y mantenimiento.
 
@@ -31,7 +31,7 @@ En IIS:
 
 ## 3) Cambios de configuración requeridos (una sola vez)
 
-Para que funcione en subsitio `/editor3d`, la app debe compilar con `basePath`.
+Para que funcione en subsitio `/3d-editor`, la app debe compilar con `basePath`.
 
 En `apps/editor/next.config.ts` agregar:
 
@@ -47,7 +47,7 @@ const nextConfig: NextConfig = {
 
 Notas:
 
-- `basePath` debe ser `"/editor3d"` en producción.
+- `basePath` debe ser `"/3d-editor"` en producción.
 - `output: 'standalone'` simplifica empaquetado y runtime.
 
 ---
@@ -59,7 +59,7 @@ Definir al menos:
 ```env
 NODE_ENV=production
 PORT=3010
-NEXT_PUBLIC_BASE_PATH=/editor3d
+NEXT_PUBLIC_BASE_PATH=/3d-editor
 NEXT_PUBLIC_ALLOWED_PARENT_ORIGIN=https://tu-dominio.com
 NEXT_PUBLIC_SUGOP_TARGET_ORIGIN=https://tu-dominio.com
 ```
@@ -81,7 +81,7 @@ pipeline {
   agent any
 
   environment {
-    NEXT_PUBLIC_BASE_PATH = '/editor3d'
+    NEXT_PUBLIC_BASE_PATH = '/3d-editor'
     NEXT_PUBLIC_ALLOWED_PARENT_ORIGIN = 'https://tu-dominio.com'
     NEXT_PUBLIC_SUGOP_TARGET_ORIGIN = 'https://tu-dominio.com'
     NODE_ENV = 'production'
@@ -124,7 +124,7 @@ pipeline {
           cp apps/editor/web.config deploy/web.config
 
           cd deploy
-          zip -r ../editor3d-deploy.zip .
+          zip -r ../3d-editor-deploy.zip .
         '''
       }
     }
@@ -134,7 +134,7 @@ pipeline {
         // Ajustar según tu método: WinRM, SSH, agente local, robocopy, etc.
         // Ejemplo conceptual:
         // 1) Copiar zip al servidor
-        // 2) Extraer en C:\inetpub\editor3d
+        // 2) Extraer en C:\inetpub\3d-editor
       }
     }
 
@@ -171,7 +171,7 @@ Crear `apps/editor/web.config` (y copiar al artifact final):
       <rules>
         <rule name="ReverseProxyToNode" stopProcessing="true">
           <match url="(.*)" />
-          <action type="Rewrite" url="http://127.0.0.1:3010/editor3d/{R:1}" />
+          <action type="Rewrite" url="http://127.0.0.1:3010/3d-editor/{R:1}" />
           <serverVariables>
             <set name="HTTP_X_FORWARDED_PROTO" value="https" />
             <set name="HTTP_X_FORWARDED_HOST" value="{HTTP_HOST}" />
@@ -191,7 +191,7 @@ Crear `apps/editor/web.config` (y copiar al artifact final):
 </configuration>
 ```
 
-> Este `web.config` se coloca en la raíz física del subsitio (ej: `C:\inetpub\editor3d`).
+> Este `web.config` se coloca en la raíz física del subsitio (ej: `C:\inetpub\3d-editor`).
 
 ---
 
@@ -201,13 +201,13 @@ Ejemplo:
 
 - Sitio principal: `Default Web Site`
 - Agregar **Application**:
-  - Alias: `editor3d`
-  - Physical path: `C:\inetpub\editor3d`
+  - Alias: `3d-editor`
+  - Physical path: `C:\inetpub\3d-editor`
   - App Pool: `No Managed Code`
 
 URL final:
 
-- `https://tu-dominio.com/editor3d`
+- `https://tu-dominio.com/3d-editor`
 
 ---
 
@@ -216,16 +216,16 @@ URL final:
 ## Opción A: NSSM (simple)
 
 ```bat
-nssm install sugop-3d-editor "C:\Program Files\nodejs\node.exe" "C:\inetpub\editor3d\server.js"
-nssm set sugop-3d-editor AppDirectory "C:\inetpub\editor3d"
-nssm set sugop-3d-editor AppEnvironmentExtra NODE_ENV=production PORT=3010 NEXT_PUBLIC_BASE_PATH=/editor3d NEXT_PUBLIC_ALLOWED_PARENT_ORIGIN=https://tu-dominio.com NEXT_PUBLIC_SUGOP_TARGET_ORIGIN=https://tu-dominio.com
+nssm install sugop-3d-editor "C:\Program Files\nodejs\node.exe" "C:\inetpub\3d-editor\server.js"
+nssm set sugop-3d-editor AppDirectory "C:\inetpub\3d-editor"
+nssm set sugop-3d-editor AppEnvironmentExtra NODE_ENV=production PORT=3010 NEXT_PUBLIC_BASE_PATH=/3d-editor NEXT_PUBLIC_ALLOWED_PARENT_ORIGIN=https://tu-dominio.com NEXT_PUBLIC_SUGOP_TARGET_ORIGIN=https://tu-dominio.com
 nssm start sugop-3d-editor
 ```
 
 ## Opción B: PM2
 
 ```bat
-pm2 start C:\inetpub\editor3d\server.js --name sugop-3d-editor --cwd C:\inetpub\editor3d --env production
+pm2 start C:\inetpub\3d-editor\server.js --name sugop-3d-editor --cwd C:\inetpub\3d-editor --env production
 pm2 save
 ```
 
@@ -233,7 +233,7 @@ pm2 save
 
 ## 9) Checklist de validación post-deploy
 
-- Abre `https://tu-dominio.com/editor3d` desde iframe de SUGOP.
+- Abre `https://tu-dominio.com/3d-editor` desde iframe de SUGOP.
 - Se recibe `sugop-3d-editor:open-context` correctamente.
 - Se puede editar (sin bloqueo readOnly).
 - Guardar emite `sugop-3d-editor:save` al parent.
@@ -247,7 +247,7 @@ pm2 save
 ## 404 en `/_next/static/*`
 
 - Verificar que copiaste `apps/editor/.next/static` al artifact.
-- Verificar `NEXT_PUBLIC_BASE_PATH=/editor3d` y build hecho con ese valor.
+- Verificar `NEXT_PUBLIC_BASE_PATH=/3d-editor` y build hecho con ese valor.
 
 ## `Acceso restringido` / origen no permitido
 
@@ -269,7 +269,7 @@ pm2 save
 
 Mantener dos jobs Jenkins:
 
-- `editor3d-build` (build + artifact)
-- `editor3d-deploy` (deploy + restart + smoke check)
+- `3d-editor-build` (build + artifact)
+- `3d-editor-deploy` (deploy + restart + smoke check)
 
 Así separás promoción de artifact y despliegue por ambiente (QA/Prod).
