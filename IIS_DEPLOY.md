@@ -4,11 +4,11 @@ Guía para desplegar este editor en **IIS como subsitio** (ej: `/3d-editor`) usa
 
 ## 1) Arquitectura recomendada
 
-- IIS sirve como **reverse proxy**.
-- La app Next.js corre en un proceso Node local (ej: `127.0.0.1:3010`).
-- IIS publica el subsitio `/3d-editor` y reenvía tráfico al proceso Node.
+- IIS ejecuta `server.js` directamente mediante **iisnode**.
+- La app Next.js corre dentro del worker process de IIS (sin servicio Node separado).
+- IIS publica el subsitio `/3d-editor` y enruta a `server.js` dentro de la misma aplicación.
 
-> Recomendado sobre `iisnode` por estabilidad operativa y mantenimiento.
+> Este documento queda orientado al escenario solicitado: **iisnode**.
 
 ---
 
@@ -17,15 +17,11 @@ Guía para desplegar este editor en **IIS como subsitio** (ej: `/3d-editor`) usa
 Instalar en Windows Server:
 
 - IIS
+- iisnode
 - URL Rewrite
-- ARR (Application Request Routing)
 - Node.js 20+
-- (Opcional) NSSM o PM2 para correr Node como servicio
 
-En IIS:
-
-- Habilitar proxy en ARR (`Server Proxy Settings` → `Enable proxy`)
-- Reiniciar IIS: `iisreset`
+En IIS, tras instalar iisnode, reiniciar: `iisreset`
 
 ---
 
@@ -58,7 +54,6 @@ Definir al menos:
 
 ```env
 NODE_ENV=production
-PORT=3010
 NEXT_PUBLIC_BASE_PATH=/3d-editor
 NEXT_PUBLIC_ALLOWED_PARENT_ORIGIN=https://tu-dominio.com
 NEXT_PUBLIC_SUGOP_TARGET_ORIGIN=https://tu-dominio.com
@@ -120,7 +115,7 @@ pipeline {
           # Public assets
           cp -R apps/editor/public deploy/apps/editor/
 
-          # IIS reverse-proxy rules
+          # IIS iisnode rules
           cp apps/editor/web.config deploy/web.config
 
           cd deploy
@@ -140,8 +135,8 @@ pipeline {
 
     stage('Restart App') {
       steps {
-        // Reiniciar servicio node (NSSM/PM2) y opcionalmente IIS
-        // bat 'nssm restart sugop-3d-editor'
+        // Reciclar App Pool o ejecutar iisreset
+        // bat 'iisreset'
       }
     }
   }
@@ -159,7 +154,7 @@ El ZIP final debe contener:
 
 ---
 
-## 6) `web.config` para el subsitio IIS
+## 6) `web.config` para el subsitio IIS (iisnode)
 
 Crear `apps/editor/web.config` (y copiar al artifact final):
 
@@ -167,18 +162,29 @@ Crear `apps/editor/web.config` (y copiar al artifact final):
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <system.webServer>
+    <handlers>
+      <add name="iisnode" path="server.js" verb="*" modules="iisnode" />
+    </handlers>
+
     <rewrite>
       <rules>
-        <rule name="ReverseProxyToNode" stopProcessing="true">
-          <match url="(.*)" />
-          <action type="Rewrite" url="http://127.0.0.1:3010/3d-editor/{R:1}" />
-          <serverVariables>
-            <set name="HTTP_X_FORWARDED_PROTO" value="https" />
-            <set name="HTTP_X_FORWARDED_HOST" value="{HTTP_HOST}" />
-          </serverVariables>
+        <rule name="StaticContent" stopProcessing="true">
+          <match url=".*" />
+          <conditions logicalGrouping="MatchAny">
+            <add input="{REQUEST_FILENAME}" matchType="IsFile" />
+            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" />
+          </conditions>
+          <action type="None" />
+        </rule>
+
+        <rule name="DynamicContent" stopProcessing="true">
+          <match url=".*" />
+          <action type="Rewrite" url="server.js" />
         </rule>
       </rules>
     </rewrite>
+
+    <iisnode nodeProcessCountPerApplication="1" loggingEnabled="true" />
 
     <webSocket enabled="true" />
 
@@ -211,23 +217,11 @@ URL final:
 
 ---
 
-## 8) Proceso Node como servicio
+## 8) Ejecución con iisnode (sin servicio externo)
 
-## Opción A: NSSM (simple)
-
-```bat
-nssm install sugop-3d-editor "C:\Program Files\nodejs\node.exe" "C:\inetpub\3d-editor\server.js"
-nssm set sugop-3d-editor AppDirectory "C:\inetpub\3d-editor"
-nssm set sugop-3d-editor AppEnvironmentExtra NODE_ENV=production PORT=3010 NEXT_PUBLIC_BASE_PATH=/3d-editor NEXT_PUBLIC_ALLOWED_PARENT_ORIGIN=https://tu-dominio.com NEXT_PUBLIC_SUGOP_TARGET_ORIGIN=https://tu-dominio.com
-nssm start sugop-3d-editor
-```
-
-## Opción B: PM2
-
-```bat
-pm2 start C:\inetpub\3d-editor\server.js --name sugop-3d-editor --cwd C:\inetpub\3d-editor --env production
-pm2 save
-```
+- No usar NSSM/PM2 para esta modalidad.
+- El proceso se administra desde el App Pool de IIS.
+- Después de deploy, reciclar el App Pool o ejecutar `iisreset`.
 
 ---
 
@@ -256,12 +250,13 @@ pm2 save
 
 ## No arranca `server.js`
 
-- Confirmar Node 20+ y ruta correcta en servicio.
-- Revisar logs del servicio (NSSM/PM2/Event Viewer).
+- Confirmar que `iisnode` está instalado en el servidor.
+- Confirmar Node 20+ instalado para IIS.
+- Revisar logs de iisnode (`iisnode` genera logs en el sitio) y Event Viewer.
 
 ## iframe bloqueado por headers
 
-- Revisar `CSP frame-ancestors` y `X-Frame-Options` en infraestructura/reverse proxy.
+- Revisar `CSP frame-ancestors` y `X-Frame-Options` en IIS/reverse proxy frontal (si existe).
 
 ---
 
