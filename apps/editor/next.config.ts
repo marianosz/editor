@@ -1,8 +1,6 @@
 import type { NextConfig } from 'next'
-import * as path from 'node:path'
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
-const workspaceRoot = path.resolve(__dirname, '../..')
 
 const nextConfig: NextConfig = {
   basePath,
@@ -13,7 +11,6 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: ['three', '@pascal-app/viewer', '@pascal-app/core', '@pascal-app/editor'],
   turbopack: {
-    root: workspaceRoot,
     resolveAlias: {
       react: './node_modules/react',
       three: './node_modules/three',
