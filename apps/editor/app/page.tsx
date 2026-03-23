@@ -238,9 +238,10 @@ export default function Home() {
         }
 
         useViewer.getState().resetSelection()
-        useEditor.getState().setPhase('site')
-        useEditor.getState().setMode('select')
-        useEditor.getState().setTool(null)
+        useEditor.getState().setPhase('structure')
+        useEditor.getState().setStructureLayer('elements')
+        useEditor.getState().setMode('build')
+        useEditor.getState().setTool('wall')
 
         setContext((prev) => ({
           entityType: payload.entityType,
