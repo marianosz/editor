@@ -9,6 +9,7 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { applySceneGraphToEditor } from '../../../../../lib/scene'
 import { Button } from './../../../../../components/ui/primitives/button'
 import {
   Dialog,
@@ -184,13 +185,7 @@ export function SettingsPanel({
 }: SettingsPanelProps = {}) {
   const nodes = useScene((state) => state.nodes)
   const rootNodeIds = useScene((state) => state.rootNodeIds)
-  const clearScene = useScene((state) => state.clearScene)
-  const resetSelection = useViewer((state) => state.resetSelection)
   const exportScene = useViewer((state) => state.exportScene)
-  const setPhase = useEditor((state) => state.setPhase)
-  const setMode = useEditor((state) => state.setMode)
-  const setTool = useEditor((state) => state.setTool)
-  const setStructureLayer = useEditor((state) => state.setStructureLayer)
   const [isGeneratingThumbnail, setIsGeneratingThumbnail] = useState(false)
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false)
   const [saveFileName, setSaveFileName] = useState('')
@@ -251,12 +246,7 @@ export function SettingsPanel({
   }
 
   const handleResetToDefault = () => {
-    clearScene()
-    resetSelection()
-    setPhase('structure')
-    setStructureLayer('elements')
-    setMode('build')
-    setTool('wall')
+    applySceneGraphToEditor(null)
     setSaveFileName('')
     onSugopFileNameReset?.()
   }
