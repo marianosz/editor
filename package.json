@@ -18,7 +18,7 @@
     "release:minor": "gh workflow run release.yml -f package=both -f bump=minor",
     "release:major": "gh workflow run release.yml -f package=both -f bump=major"
   },
-  "dependencies": {
+  "optionalDependencies": {
     "portless": "^0.4.2"
   },
   "devDependencies": {
