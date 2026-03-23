@@ -95,6 +95,10 @@ export interface EditorProps {
 
   // Presets storage backend (defaults to localStorage)
   presetsAdapter?: PresetsAdapter
+
+  // Internal host integration
+  readOnly?: boolean
+  onManualSave?: (options?: { fileName?: string }) => void
 }
 
 function EditorSceneCrashFallback() {
@@ -139,8 +143,10 @@ export default function Editor({
   settingsPanelProps,
   sitePanelProps,
   presetsAdapter,
+  readOnly = false,
+  onManualSave,
 }: EditorProps) {
-  useKeyboard()
+  useKeyboard({ onManualSave, readOnly })
 
   const { isLoadingSceneRef } = useAutoSave({
     onSave,
@@ -151,6 +157,14 @@ export default function Editor({
 
   const [isSceneLoading, setIsSceneLoading] = useState(false)
   const isPreviewMode = useEditor((s) => s.isPreviewMode)
+
+  useEffect(() => {
+    useEditor.getState().setReadOnly(readOnly)
+    if (readOnly) {
+      useEditor.getState().setMode('select')
+      useEditor.getState().setTool(null)
+    }
+  }, [readOnly])
 
   // Load scene on mount (or when onLoad identity changes, e.g. project switch)
   useEffect(() => {
@@ -216,7 +230,11 @@ export default function Editor({
             <SidebarProvider className="fixed z-20">
               <AppSidebar
                 appMenuButton={appMenuButton}
-                settingsPanelProps={settingsPanelProps}
+                settingsPanelProps={{
+                  ...settingsPanelProps,
+                  readOnly,
+                  onSugopSave: (fileName) => onManualSave?.({ fileName }),
+                }}
                 sidebarTop={sidebarTop}
                 sitePanelProps={sitePanelProps}
               />
@@ -227,19 +245,19 @@ export default function Editor({
         <ErrorBoundary fallback={<EditorSceneCrashFallback />}>
           <Viewer selectionManager={isPreviewMode ? 'default' : 'custom'}>
             {!isPreviewMode && <SelectionManager />}
-            {!isPreviewMode && <FloatingActionMenu />}
+            {!isPreviewMode && !readOnly && <FloatingActionMenu />}
             <ExportManager />
             {isPreviewMode ? <ViewerZoneSystem /> : <ZoneSystem />}
             <CeilingSystem />
             {!isPreviewMode && <Grid cellColor="#aaa" fadeDistance={500} sectionColor="#ccc" />}
-            {!isPreviewMode && <ToolManager />}
+            {!isPreviewMode && !readOnly && <ToolManager />}
             <CustomCameraControls />
             <ThumbnailGenerator onThumbnailCapture={onThumbnailCapture} />
             <PresetThumbnailGenerator />
             {!isPreviewMode && <SiteEdgeLabels />}
             {isPreviewMode && <InteractiveSystem />}
           </Viewer>
-          {!isPreviewMode && <ZoneLabelEditorSystem />}
+          {!isPreviewMode && !readOnly && <ZoneLabelEditorSystem />}
         </ErrorBoundary>
       </div>
     </PresetsProvider>

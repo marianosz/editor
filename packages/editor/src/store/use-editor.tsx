@@ -54,6 +54,8 @@ export type StructureLayer = 'zones' | 'elements'
 export type Tool = SiteTool | StructureTool | FurnishTool
 
 type EditorState = {
+  readOnly: boolean
+  setReadOnly: (readOnly: boolean) => void
   phase: Phase
   setPhase: (phase: Phase) => void
   mode: Mode
@@ -82,6 +84,8 @@ type EditorState = {
 }
 
 const useEditor = create<EditorState>()((set, get) => ({
+  readOnly: false,
+  setReadOnly: (readOnly) => set({ readOnly }),
   phase: 'site',
   setPhase: (phase) => {
     const currentPhase = get().phase

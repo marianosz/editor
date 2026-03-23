@@ -4,7 +4,12 @@ import { useEffect } from 'react'
 import { sfxEmitter } from '../lib/sfx-bus'
 import useEditor from '../store/use-editor'
 
-export const useKeyboard = () => {
+type UseKeyboardOptions = {
+  readOnly?: boolean
+  onManualSave?: () => void
+}
+
+export const useKeyboard = ({ readOnly = false, onManualSave }: UseKeyboardOptions = {}) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't handle shortcuts if user is typing in an input
@@ -19,6 +24,11 @@ export const useKeyboard = () => {
         // Clear selections to close UI panels, but KEEP the active building and level context
         useViewer.getState().setSelection({ selectedIds: [], zoneId: null })
         useEditor.getState().setSelectedReferenceId(null)
+      } else if ((e.key === 's' || e.key === 'S') && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        if (!readOnly) {
+          onManualSave?.()
+        }
       } else if (e.key === '1' && !e.metaKey && !e.ctrlKey) {
         e.preventDefault()
         useEditor.getState().setPhase('site')
@@ -50,9 +60,11 @@ export const useKeyboard = () => {
         e.preventDefault()
         useEditor.getState().setMode('build')
       } else if (e.key === 'z' && (e.metaKey || e.ctrlKey)) {
+        if (readOnly) return
         e.preventDefault()
         useScene.temporal.getState().undo()
       } else if (e.key === 'Z' && e.shiftKey && (e.metaKey || e.ctrlKey)) {
+        if (readOnly) return
         e.preventDefault()
         useScene.temporal.getState().redo()
       } else if (e.key === 'ArrowUp' && (e.metaKey || e.ctrlKey)) {
@@ -88,6 +100,7 @@ export const useKeyboard = () => {
           }
         }
       } else if (e.key === 'Delete' || e.key === 'Backspace') {
+        if (readOnly) return
         e.preventDefault()
 
         const selectedNodeIds = useViewer.getState().selection.selectedIds as AnyNodeId[]
@@ -111,7 +124,7 @@ export const useKeyboard = () => {
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [])
+  }, [onManualSave, readOnly])
 
   return null
 }

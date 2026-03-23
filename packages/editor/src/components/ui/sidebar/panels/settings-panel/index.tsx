@@ -1,13 +1,12 @@
 import { emitter, useScene } from '@pascal-app/core'
 import { useViewer } from '@pascal-app/viewer'
 import { TreeView, VisualJson } from '@visual-json/react'
-import { Camera, Download, Save, Trash2, Upload } from 'lucide-react'
+import { Camera, Download, Save, Trash2 } from 'lucide-react'
 import {
   type KeyboardEvent,
   type SyntheticEvent,
   useCallback,
   useMemo,
-  useRef,
   useState,
 } from 'react'
 import { Button } from './../../../../../components/ui/primitives/button'
@@ -163,6 +162,10 @@ export interface ProjectVisibility {
 
 export interface SettingsPanelProps {
   projectId?: string
+  readOnly?: boolean
+  onSugopSave?: (fileName?: string) => void
+  onSugopFileNameReset?: () => void
+  defaultSaveFileName?: string
   projectVisibility?: ProjectVisibility
   onVisibilityChange?: (
     field: 'isPrivate' | 'showScansPublic' | 'showGuidesPublic',
@@ -172,18 +175,22 @@ export interface SettingsPanelProps {
 
 export function SettingsPanel({
   projectId,
+  readOnly = false,
+  onSugopSave,
+  onSugopFileNameReset,
+  defaultSaveFileName,
   projectVisibility,
   onVisibilityChange,
 }: SettingsPanelProps = {}) {
-  const fileInputRef = useRef<HTMLInputElement>(null)
   const nodes = useScene((state) => state.nodes)
   const rootNodeIds = useScene((state) => state.rootNodeIds)
-  const setScene = useScene((state) => state.setScene)
   const clearScene = useScene((state) => state.clearScene)
   const resetSelection = useViewer((state) => state.resetSelection)
   const exportScene = useViewer((state) => state.exportScene)
   const setPhase = useEditor((state) => state.setPhase)
   const [isGeneratingThumbnail, setIsGeneratingThumbnail] = useState(false)
+  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false)
+  const [saveFileName, setSaveFileName] = useState('')
   const sceneGraphValue = useMemo(
     () => buildSceneGraphValue(nodes as Record<string, SceneNode>, rootNodeIds),
     [nodes, rootNodeIds],
@@ -199,7 +206,7 @@ export function SettingsPanel({
     }
   }, [])
 
-  const isLocalProject = false // Props-based; only show cloud sections when projectId provided
+  const isLocalProject = true // Internal fork: cloud/community settings are disabled
 
   const handleExport = async () => {
     if (exportScene) {
@@ -208,6 +215,19 @@ export function SettingsPanel({
   }
 
   const handleSaveBuild = () => {
+    if (onSugopSave) {
+      const currentFileName = defaultSaveFileName?.trim() ?? ''
+
+      if (currentFileName) {
+        onSugopSave(currentFileName)
+        return
+      }
+
+      setSaveFileName('')
+      setIsSaveDialogOpen(true)
+      return
+    }
+
     const sceneData = { nodes, rootNodeIds }
     const json = JSON.stringify(sceneData, null, 2)
     const blob = new Blob([json], { type: 'application/json' })
@@ -220,33 +240,18 @@ export function SettingsPanel({
     URL.revokeObjectURL(url)
   }
 
-  const handleFileLoad = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      try {
-        const data = JSON.parse(event.target?.result as string)
-        if (data.nodes && data.rootNodeIds) {
-          setScene(data.nodes, data.rootNodeIds)
-          resetSelection()
-          setPhase('site')
-        }
-      } catch (err) {
-        console.error('Failed to load build:', err)
-      }
-    }
-    reader.readAsText(file)
-
-    // Reset input so the same file can be loaded again
-    e.target.value = ''
+  const handleConfirmSugopSave = () => {
+    const fileName = saveFileName.trim()
+    onSugopSave?.(fileName || undefined)
+    setIsSaveDialogOpen(false)
   }
 
   const handleResetToDefault = () => {
     clearScene()
     resetSelection()
     setPhase('site')
+    setSaveFileName('')
+    onSugopFileNameReset?.()
   }
 
   const handleGenerateThumbnail = () => {
@@ -316,10 +321,10 @@ export function SettingsPanel({
 
       {/* Export Section */}
       <div className="space-y-2">
-        <label className="font-medium text-muted-foreground text-xs uppercase">Export</label>
+        <label className="font-medium text-muted-foreground text-xs uppercase">Exportar</label>
         <Button className="w-full justify-start gap-2" onClick={handleExport} variant="outline">
           <Download className="size-4" />
-          Export 3D Model
+          Exportar modelo 3D
         </Button>
       </div>
 
@@ -339,31 +344,54 @@ export function SettingsPanel({
         </div>
       )}
 
-      {/* Save/Load Section */}
+      {/* Save Section */}
       <div className="space-y-2">
-        <label className="font-medium text-muted-foreground text-xs uppercase">Save & Load</label>
-
-        <Button className="w-full justify-start gap-2" onClick={handleSaveBuild} variant="outline">
-          <Save className="size-4" />
-          Save Build
-        </Button>
+        <label className="font-medium text-muted-foreground text-xs uppercase">Guardar</label>
 
         <Button
           className="w-full justify-start gap-2"
-          onClick={() => fileInputRef.current?.click()}
+          disabled={readOnly}
+          onClick={handleSaveBuild}
           variant="outline"
         >
-          <Upload className="size-4" />
-          Load Build
+          <Save className="size-4" />
+          Guardar
         </Button>
 
-        <input
-          accept="application/json"
-          className="hidden"
-          onChange={handleFileLoad}
-          ref={fileInputRef}
-          type="file"
-        />
+        {defaultSaveFileName?.trim() && (
+          <p className="text-muted-foreground text-xs">
+            Nombre actual: <span className="text-foreground">{defaultSaveFileName.trim()}</span>
+          </p>
+        )}
+
+        <Dialog onOpenChange={setIsSaveDialogOpen} open={isSaveDialogOpen}>
+          <DialogContent className="max-w-sm">
+            <DialogTitle>Guardar</DialogTitle>
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="font-medium text-sm" htmlFor="save-filename">
+                  Nombre de archivo
+                </label>
+                <input
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none ring-offset-background transition-colors placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                  id="save-filename"
+                  onChange={(e) => setSaveFileName(e.target.value)}
+                  placeholder=""
+                  value={saveFileName}
+                />
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button onClick={() => setIsSaveDialogOpen(false)} type="button" variant="outline">
+                  Cancelar
+                </Button>
+                <Button onClick={handleConfirmSugopSave} type="button">
+                  Guardar
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Audio Section */}
@@ -374,21 +402,21 @@ export function SettingsPanel({
 
       {/* Keyboard Section */}
       <div className="space-y-2">
-        <label className="font-medium text-muted-foreground text-xs uppercase">Keyboard</label>
+        <label className="font-medium text-muted-foreground text-xs uppercase">Teclado</label>
         <KeyboardShortcutsDialog />
       </div>
 
       {/* Scene Graph */}
       <div className="space-y-1">
-        <label className="font-medium text-muted-foreground text-xs uppercase">Scene Graph</label>
+        <label className="font-medium text-muted-foreground text-xs uppercase">Árbol de escena</label>
         <Dialog>
           <DialogTrigger asChild>
             <Button className="h-auto justify-start p-0 text-sm" variant="link">
-              Explore scene graph
+              Explorar árbol de escena
             </Button>
           </DialogTrigger>
           <DialogContent className="h-[80vh] max-w-[95vw] gap-0 overflow-hidden border-0 bg-[#1e1e1e] p-0 shadow-none sm:max-w-5xl">
-            <DialogTitle className="sr-only">Scene Graph</DialogTitle>
+            <DialogTitle className="sr-only">Árbol de escena</DialogTitle>
             <div
               className="flex h-full min-h-0 w-full min-w-0 *:h-full *:w-full *:overflow-y-auto"
               onContextMenuCapture={blockSceneGraphMutations}
@@ -406,15 +434,16 @@ export function SettingsPanel({
 
       {/* Danger Zone */}
       <div className="space-y-2">
-        <label className="font-medium text-destructive text-xs uppercase">Danger Zone</label>
+        <label className="font-medium text-destructive text-xs uppercase">Zona de riesgo</label>
 
         <Button
           className="w-full justify-start gap-2"
+          disabled={readOnly}
           onClick={handleResetToDefault}
           variant="destructive"
         >
           <Trash2 className="size-4" />
-          Clear & Start New
+          Limpiar y empezar nuevo
         </Button>
       </div>
     </div>

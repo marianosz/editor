@@ -21,7 +21,7 @@ const allModes: ModeConfig[] = [
   {
     id: 'select',
     imageSrc: '/icons/select.png',
-    label: 'Select',
+    label: 'Seleccionar',
     shortcut: 'V',
     color: 'hover:bg-blue-500/20 hover:text-blue-400',
     activeColor: 'bg-blue-500/20 text-blue-400',
@@ -29,7 +29,7 @@ const allModes: ModeConfig[] = [
   {
     id: 'edit',
     icon: Pencil,
-    label: 'Edit',
+    label: 'Editar',
     shortcut: 'E',
     color: 'hover:bg-orange-500/20 hover:text-orange-400',
     activeColor: 'bg-orange-500/20 text-orange-400',
@@ -37,7 +37,7 @@ const allModes: ModeConfig[] = [
   {
     id: 'build',
     imageSrc: '/icons/build.png',
-    label: 'Build',
+    label: 'Construir',
     shortcut: 'B',
     color: 'hover:bg-green-500/20 hover:text-green-400',
     activeColor: 'bg-green-500/20 text-green-400',
@@ -45,7 +45,7 @@ const allModes: ModeConfig[] = [
   {
     id: 'delete',
     icon: Trash2,
-    label: 'Delete',
+    label: 'Eliminar',
     shortcut: 'D',
     color: 'hover:bg-red-500/20 hover:text-red-400',
     activeColor: 'bg-red-500/20 text-red-400',

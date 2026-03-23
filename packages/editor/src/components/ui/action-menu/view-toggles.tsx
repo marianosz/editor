@@ -6,8 +6,8 @@ import { cn } from '../../../lib/utils'
 import { ActionButton } from './action-button'
 
 const levelModeLabels: Record<'stacked' | 'exploded' | 'solo', string> = {
-  stacked: 'Stacked',
-  exploded: 'Exploded',
+  stacked: 'Apilado',
+  exploded: 'Explotado',
   solo: 'Solo',
 }
 
@@ -21,19 +21,19 @@ const wallModeConfig: Record<
 > = {
   up: {
     icon: (props) => (
-      <img alt="Full Height" height={20} src="/icons/room.png" width={20} {...props} />
+      <img alt="Altura completa" height={20} src="/icons/room.png" width={20} {...props} />
     ),
-    label: 'Full Height',
+    label: 'Altura completa',
   },
   cutaway: {
     icon: (props) => (
-      <img alt="Cutaway" height={20} src="/icons/wallcut.png" width={20} {...props} />
+      <img alt="Corte" height={20} src="/icons/wallcut.png" width={20} {...props} />
     ),
-    label: 'Cutaway',
+    label: 'Corte',
   },
   down: {
-    icon: (props) => <img alt="Low" height={20} src="/icons/walllow.png" width={20} {...props} />,
-    label: 'Low',
+    icon: (props) => <img alt="Bajo" height={20} src="/icons/walllow.png" width={20} {...props} />,
+    label: 'Bajo',
   },
 }
 
@@ -82,7 +82,7 @@ export function ViewToggles() {
             ? 'bg-violet-500/20 text-violet-400'
             : 'hover:text-violet-400',
         )}
-        label={`Camera: ${cameraMode === 'perspective' ? 'Perspective' : 'Orthographic'}`}
+        label={`Cámara: ${cameraMode === 'perspective' ? 'Perspectiva' : 'Ortográfica'}`}
         onClick={toggleCameraMode}
         size="icon"
         variant="ghost"
@@ -95,7 +95,7 @@ export function ViewToggles() {
         className={cn(
           levelMode !== 'stacked' ? 'bg-amber-500/20 text-amber-400' : 'hover:text-amber-400',
         )}
-        label={`Levels: ${levelMode === 'manual' ? 'Manual' : levelModeLabels[levelMode as keyof typeof levelModeLabels]}`}
+        label={`Niveles: ${levelMode === 'manual' ? 'Manual' : levelModeLabels[levelMode as keyof typeof levelModeLabels]}`}
         onClick={cycleLevelMode}
         size="icon"
         variant="ghost"
@@ -113,7 +113,7 @@ export function ViewToggles() {
             ? 'bg-white/10'
             : 'opacity-60 grayscale hover:bg-white/5 hover:opacity-100 hover:grayscale-0',
         )}
-        label={`Walls: ${wallModeConfig[wallMode].label}`}
+        label={`Muros: ${wallModeConfig[wallMode].label}`}
         onClick={cycleWallMode}
         size="icon"
         variant="ghost"
@@ -132,12 +132,12 @@ export function ViewToggles() {
             ? 'bg-white/10'
             : 'opacity-60 grayscale hover:bg-white/5 hover:opacity-100 hover:grayscale-0',
         )}
-        label={`Scans: ${showScans ? 'Visible' : 'Hidden'}`}
+        label={`Escaneos: ${showScans ? 'Visible' : 'Oculto'}`}
         onClick={() => setShowScans(!showScans)}
         size="icon"
         variant="ghost"
       >
-        <img alt="Scans" className="h-[28px] w-[28px] object-contain" src="/icons/mesh.png" />
+        <img alt="Escaneos" className="h-[28px] w-[28px] object-contain" src="/icons/mesh.png" />
       </ActionButton>
 
       {/* Show Guides */}
@@ -148,12 +148,12 @@ export function ViewToggles() {
             ? 'bg-white/10'
             : 'opacity-60 grayscale hover:bg-white/5 hover:opacity-100 hover:grayscale-0',
         )}
-        label={`Guides: ${showGuides ? 'Visible' : 'Hidden'}`}
+        label={`Guías: ${showGuides ? 'Visible' : 'Oculto'}`}
         onClick={() => setShowGuides(!showGuides)}
         size="icon"
         variant="ghost"
       >
-        <img alt="Guides" className="h-[28px] w-[28px] object-contain" src="/icons/floorplan.png" />
+        <img alt="Guías" className="h-[28px] w-[28px] object-contain" src="/icons/floorplan.png" />
       </ActionButton>
     </div>
   )

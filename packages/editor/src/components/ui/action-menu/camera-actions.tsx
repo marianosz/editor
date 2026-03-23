@@ -22,13 +22,13 @@ export function CameraActions() {
       {/* Orbit CCW */}
       <ActionButton
         className="group hover:bg-white/5"
-        label="Orbit Left"
+        label="Orbitar izquierda"
         onClick={orbitCCW}
         size="icon"
         variant="ghost"
       >
         <Image
-          alt="Orbit Left"
+          alt="Orbitar izquierda"
           className="h-[28px] w-[28px] -scale-x-100 object-contain opacity-70 transition-opacity group-hover:opacity-100"
           height={28}
           src="/icons/rotate.png"
@@ -39,13 +39,13 @@ export function CameraActions() {
       {/* Orbit CW */}
       <ActionButton
         className="group hover:bg-white/5"
-        label="Orbit Right"
+        label="Orbitar derecha"
         onClick={orbitCW}
         size="icon"
         variant="ghost"
       >
         <Image
-          alt="Orbit Right"
+          alt="Orbitar derecha"
           className="h-[28px] w-[28px] object-contain opacity-70 transition-opacity group-hover:opacity-100"
           height={28}
           src="/icons/rotate.png"
@@ -56,13 +56,13 @@ export function CameraActions() {
       {/* Top View */}
       <ActionButton
         className="group hover:bg-white/5"
-        label="Top View"
+        label="Vista superior"
         onClick={goToTopView}
         size="icon"
         variant="ghost"
       >
         <Image
-          alt="Top View"
+          alt="Vista superior"
           className="h-[28px] w-[28px] object-contain opacity-70 transition-opacity group-hover:opacity-100"
           height={28}
           src="/icons/topview.png"

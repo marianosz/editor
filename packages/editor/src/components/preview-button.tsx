@@ -10,7 +10,7 @@ export function PreviewButton() {
       onClick={() => useEditor.getState().setPreviewMode(true)}
     >
       <Eye className="h-4 w-4 shrink-0" />
-      <span className="hidden whitespace-nowrap sm:inline">Preview</span>
+      <span className="hidden whitespace-nowrap sm:inline">Vista previa</span>
     </button>
   )
 }

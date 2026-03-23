@@ -14,16 +14,12 @@ export const env = createEnv({
    * Server-side environment variables (not exposed to client)
    */
   server: {
-    // Database
-    POSTGRES_URL: z.string().min(1),
-    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
-
-    // Auth
-    BETTER_AUTH_SECRET: z.string().min(1),
+    // Legacy backend/auth vars kept optional for internal local-only mode
+    POSTGRES_URL: z.string().optional(),
+    SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
+    BETTER_AUTH_SECRET: z.string().optional(),
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
-
-    // Email
     RESEND_API_KEY: z.string().optional(),
   },
 
@@ -31,8 +27,10 @@ export const env = createEnv({
    * Client-side environment variables (exposed to browser via NEXT_PUBLIC_)
    */
   client: {
-    NEXT_PUBLIC_SUPABASE_URL: z.string().min(1),
+    NEXT_PUBLIC_SUPABASE_URL: z.string().optional(),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
+    NEXT_PUBLIC_ALLOWED_PARENT_ORIGIN: z.string().optional(),
+    NEXT_PUBLIC_SUGOP_TARGET_ORIGIN: z.string().optional(),
   },
 
   /**
@@ -49,6 +47,8 @@ export const env = createEnv({
     // Client
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_ALLOWED_PARENT_ORIGIN: process.env.NEXT_PUBLIC_ALLOWED_PARENT_ORIGIN,
+    NEXT_PUBLIC_SUGOP_TARGET_ORIGIN: process.env.NEXT_PUBLIC_SUGOP_TARGET_ORIGIN,
   },
 
   /**
