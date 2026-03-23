@@ -2,6 +2,7 @@
 
 import { initSpaceDetectionSync, initSpatialGridSync, useScene } from '@pascal-app/core'
 import { InteractiveSystem, useViewer, Viewer } from '@pascal-app/viewer'
+import { Save } from 'lucide-react'
 import { type ReactNode, useEffect, useState } from 'react'
 import { ViewerOverlay } from '../../components/viewer-overlay'
 import { ViewerZoneSystem } from '../../components/viewer-zone-system'
@@ -22,6 +23,8 @@ import { ToolManager } from '../tools/tool-manager'
 import { ActionMenu } from '../ui/action-menu'
 import { HelperManager } from '../ui/helpers/helper-manager'
 import { PanelManager } from '../ui/panels/panel-manager'
+import { Button } from '../ui/primitives/button'
+import { Dialog, DialogContent, DialogTitle } from '../ui/primitives/dialog'
 import { ErrorBoundary } from '../ui/primitives/error-boundary'
 import { SidebarProvider } from '../ui/primitives/sidebar'
 import { SceneLoader } from '../ui/scene-loader'
@@ -156,7 +159,30 @@ export default function Editor({
   })
 
   const [isSceneLoading, setIsSceneLoading] = useState(false)
+  const [isQuickSaveDialogOpen, setIsQuickSaveDialogOpen] = useState(false)
+  const [quickSaveFileName, setQuickSaveFileName] = useState('')
   const isPreviewMode = useEditor((s) => s.isPreviewMode)
+
+  const handleQuickSave = () => {
+    if (!onManualSave) return
+
+    const currentFileName = settingsPanelProps?.defaultSaveFileName?.trim() ?? ''
+
+    if (currentFileName) {
+      onManualSave({ fileName: currentFileName })
+      return
+    }
+
+    setQuickSaveFileName('')
+    setIsQuickSaveDialogOpen(true)
+  }
+
+  const handleConfirmQuickSave = () => {
+    const fileName = quickSaveFileName.trim()
+    if (!fileName) return
+    onManualSave?.({ fileName })
+    setIsQuickSaveDialogOpen(false)
+  }
 
   useEffect(() => {
     useEditor.getState().setReadOnly(readOnly)
@@ -239,6 +265,56 @@ export default function Editor({
                 sitePanelProps={sitePanelProps}
               />
             </SidebarProvider>
+          </>
+        )}
+
+        {!isPreviewMode && onManualSave && (
+          <>
+            <Button
+              aria-label="Guardar"
+              className="fixed right-4 top-4 z-[65]"
+              disabled={readOnly}
+              onClick={handleQuickSave}
+              type="button"
+            >
+              <Save className="size-4" />
+            </Button>
+
+            <Dialog onOpenChange={setIsQuickSaveDialogOpen} open={isQuickSaveDialogOpen}>
+              <DialogContent className="max-w-sm">
+                <DialogTitle>Guardar</DialogTitle>
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <label className="font-medium text-sm" htmlFor="quick-save-filename">
+                      Nombre de archivo
+                    </label>
+                    <input
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none ring-offset-background transition-colors placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                      id="quick-save-filename"
+                      onChange={(e) => setQuickSaveFileName(e.target.value)}
+                      value={quickSaveFileName}
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      onClick={() => setIsQuickSaveDialogOpen(false)}
+                      type="button"
+                      variant="outline"
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      disabled={!quickSaveFileName.trim()}
+                      onClick={handleConfirmQuickSave}
+                      type="button"
+                    >
+                      Guardar
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </>
         )}
 

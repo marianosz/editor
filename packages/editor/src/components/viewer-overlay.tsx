@@ -25,8 +25,8 @@ type ProjectOwner = {
 }
 
 const levelModeLabels: Record<'stacked' | 'exploded' | 'solo', string> = {
-  stacked: 'Stacked',
-  exploded: 'Exploded',
+  stacked: 'Apilado',
+  exploded: 'Explotado',
   solo: 'Solo',
 }
 
@@ -35,29 +35,32 @@ const wallModeConfig = {
     icon: (props: any) => (
       <img alt="Full Height" height={28} src="/icons/room.png" width={28} {...props} />
     ),
-    label: 'Full Height',
+    label: 'Altura completa',
   },
   cutaway: {
     icon: (props: any) => (
       <img alt="Cutaway" height={28} src="/icons/wallcut.png" width={28} {...props} />
     ),
-    label: 'Cutaway',
+    label: 'Corte',
   },
   down: {
     icon: (props: any) => (
       <img alt="Low" height={28} src="/icons/walllow.png" width={28} {...props} />
     ),
-    label: 'Low',
+    label: 'Bajo',
   },
 }
 
 const getNodeName = (node: AnyNode): string => {
   if ('name' in node && node.name) return node.name
-  if (node.type === 'wall') return 'Wall'
-  if (node.type === 'item') return (node as { asset: { name: string } }).asset?.name || 'Item'
-  if (node.type === 'slab') return 'Slab'
-  if (node.type === 'ceiling') return 'Ceiling'
-  if (node.type === 'roof') return 'Roof'
+  if (node.type === 'wall') return 'Muro'
+  if (node.type === 'item') return (node as { asset: { name: string } }).asset?.name || 'Ítem'
+  if (node.type === 'slab') return 'Losa'
+  if (node.type === 'ceiling') return 'Cielo'
+  if (node.type === 'roof') return 'Techo'
+  if (node.type === 'door') return 'Puerta'
+  if (node.type === 'window') return 'Ventana'
+  if (node.type === 'zone') return 'Zona'
   return node.type
 }
 
@@ -132,6 +135,7 @@ export const ViewerOverlay = ({
           <div className="flex items-center gap-3 px-3 py-2.5">
             {onBack ? (
               <button
+                aria-label="Volver"
                 className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-white/10"
                 onClick={onBack}
               >
@@ -139,6 +143,7 @@ export const ViewerOverlay = ({
               </button>
             ) : (
               <Link
+                aria-label="Volver"
                 className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-white/10"
                 href="/"
               >
@@ -147,7 +152,7 @@ export const ViewerOverlay = ({
             )}
             <div className="min-w-0">
               <div className="truncate font-medium text-foreground text-sm">
-                {projectName || 'Untitled'}
+                {projectName || 'Sin título'}
               </div>
               {owner?.username && (
                 <Link
@@ -168,7 +173,7 @@ export const ViewerOverlay = ({
                   className="text-muted-foreground transition-colors hover:text-foreground"
                   onClick={() => handleBreadcrumbClick('root')}
                 >
-                  Site
+                  Sitio
                 </button>
 
                 {building && (
@@ -178,7 +183,7 @@ export const ViewerOverlay = ({
                       className={`truncate transition-colors ${level ? 'text-muted-foreground hover:text-foreground' : 'font-medium text-foreground'}`}
                       onClick={() => handleBreadcrumbClick('building')}
                     >
-                      {building.name || 'Building'}
+                      {building.name || 'Edificio'}
                     </button>
                   </>
                 )}
@@ -190,7 +195,7 @@ export const ViewerOverlay = ({
                       className={`truncate transition-colors ${zone ? 'text-muted-foreground hover:text-foreground' : 'font-medium text-foreground'}`}
                       onClick={() => handleBreadcrumbClick('level')}
                     >
-                      {level.name || `Level ${level.level}`}
+                      {level.name || `Nivel ${level.level}`}
                     </button>
                   </>
                 )}
@@ -223,7 +228,7 @@ export const ViewerOverlay = ({
         {building && levels.length > 0 && (
           <div className="pointer-events-auto flex w-48 flex-col overflow-hidden rounded-2xl border border-border/40 bg-background/95 py-1 shadow-lg backdrop-blur-xl transition-colors duration-200 ease-out">
             <span className="px-3 py-2 font-medium text-[10px] text-muted-foreground uppercase tracking-wider">
-              Levels
+              Niveles
             </span>
             <div className="flex flex-col">
               {levels.map((lvl) => {
@@ -249,7 +254,7 @@ export const ViewerOverlay = ({
                         <Layers className="h-3.5 w-3.5" />
                       </span>
                       <div className="min-w-0 flex-1 truncate text-left">
-                        {lvl.name || `Level ${lvl.level}`}
+                        {lvl.name || `Nivel ${lvl.level}`}
                       </div>
                     </div>
                   </button>
@@ -363,7 +368,7 @@ export const ViewerOverlay = ({
                   ? 'bg-violet-500/20 text-violet-400'
                   : 'hover:bg-white/5 hover:text-violet-400'
               }
-              label={`Camera: ${cameraMode === 'perspective' ? 'Perspective' : 'Orthographic'}`}
+              label={`Cámara: ${cameraMode === 'perspective' ? 'Perspectiva' : 'Ortográfica'}`}
               onClick={() =>
                 useViewer
                   .getState()
@@ -383,7 +388,7 @@ export const ViewerOverlay = ({
                   ? 'bg-amber-500/20 text-amber-400'
                   : 'hover:bg-white/5 hover:text-amber-400'
               }
-              label={`Levels: ${levelMode === 'manual' ? 'Manual' : levelModeLabels[levelMode as keyof typeof levelModeLabels]}`}
+              label={`Niveles: ${levelMode === 'manual' ? 'Manual' : levelModeLabels[levelMode as keyof typeof levelModeLabels]}`}
               onClick={() => {
                 if (levelMode === 'manual') return useViewer.getState().setLevelMode('stacked')
                 const modes: ('stacked' | 'exploded' | 'solo')[] = ['stacked', 'exploded', 'solo']
@@ -408,7 +413,7 @@ export const ViewerOverlay = ({
                   ? 'bg-white/10'
                   : 'opacity-60 grayscale hover:bg-white/5 hover:opacity-100 hover:grayscale-0'
               }
-              label={`Walls: ${wallModeConfig[wallMode as keyof typeof wallModeConfig].label}`}
+              label={`Muros: ${wallModeConfig[wallMode as keyof typeof wallModeConfig].label}`}
               onClick={() => {
                 const modes: ('cutaway' | 'up' | 'down')[] = ['cutaway', 'up', 'down']
                 const nextIndex = (modes.indexOf(wallMode as any) + 1) % modes.length
@@ -429,7 +434,7 @@ export const ViewerOverlay = ({
             {/* Camera Actions */}
             <ActionButton
               className="group hidden hover:bg-white/5 sm:inline-flex"
-              label="Orbit Left"
+              label="Orbitar a la izquierda"
               onClick={() => emitter.emit('camera-controls:orbit-ccw')}
               size="icon"
               tooltipSide="top"
@@ -444,7 +449,7 @@ export const ViewerOverlay = ({
 
             <ActionButton
               className="group hidden hover:bg-white/5 sm:inline-flex"
-              label="Orbit Right"
+              label="Orbitar a la derecha"
               onClick={() => emitter.emit('camera-controls:orbit-cw')}
               size="icon"
               tooltipSide="top"
@@ -459,7 +464,7 @@ export const ViewerOverlay = ({
 
             <ActionButton
               className="group hover:bg-white/5"
-              label="Top View"
+              label="Vista superior"
               onClick={() => emitter.emit('camera-controls:top-view')}
               size="icon"
               tooltipSide="top"

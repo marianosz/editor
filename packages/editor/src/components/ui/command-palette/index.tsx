@@ -148,11 +148,11 @@ function OptionItem({
 // Sub-page label map
 // ---------------------------------------------------------------------------
 const PAGE_LABEL: Record<string, string> = {
-  'wall-mode': 'Wall Mode',
-  'level-mode': 'Level Mode',
-  'rename-level': 'Rename Level',
-  'goto-level': 'Go to Level',
-  'camera-view': 'Camera Snapshot',
+  'wall-mode': 'Modo de muros',
+  'level-mode': 'Modo de niveles',
+  'rename-level': 'Renombrar nivel',
+  'goto-level': 'Ir a nivel',
+  'camera-view': 'Captura de cámara',
   'camera-scope': '', // dynamic — overridden in breadcrumb
 }
 
@@ -282,14 +282,14 @@ export function CommandPalette() {
   }
 
   const wallModeLabel: Record<'cutaway' | 'up' | 'down', string> = {
-    cutaway: 'Cutaway',
-    up: 'Up',
-    down: 'Down',
+    cutaway: 'Corte',
+    up: 'Completo',
+    down: 'Bajo',
   }
   const levelModeLabel: Record<'manual' | 'stacked' | 'exploded' | 'solo', string> = {
     manual: 'Manual',
-    stacked: 'Stacked',
-    exploded: 'Exploded',
+    stacked: 'Apilado',
+    exploded: 'Explotado',
     solo: 'Solo',
   }
 
@@ -419,7 +419,7 @@ export function CommandPalette() {
                 type="button"
               >
                 {page === 'camera-scope'
-                  ? (cameraScope?.label ?? 'Snapshot')
+                  ? (cameraScope?.label ?? 'Captura')
                   : (PAGE_LABEL[page] ?? page)}
               </button>
             )}
@@ -428,10 +428,10 @@ export function CommandPalette() {
               onValueChange={setInputValue}
               placeholder={
                 page === 'rename-level'
-                  ? 'Type a new name…'
+                  ? 'Escribe un nombre nuevo…'
                   : page
-                    ? 'Filter options…'
-                    : 'Search actions…'
+                    ? 'Filtrar opciones…'
+                    : 'Buscar acciones…'
               }
               value={inputValue}
             />
@@ -439,87 +439,87 @@ export function CommandPalette() {
 
           <Command.List className="max-h-100 overflow-y-auto p-1.5">
             <Command.Empty className="py-8 text-center text-muted-foreground text-sm">
-              No commands found.
+              No se encontraron comandos.
             </Command.Empty>
 
             {/* ── Root view ─────────────────────────────────────────────── */}
             {!page && (
               <>
                 {/* Scene / Tools */}
-                <Command.Group heading="Scene">
+                <Command.Group heading="Escena">
                   <Item
                     icon={<Square className="h-4 w-4" />}
                     keywords={['draw', 'build', 'structure']}
-                    label="Wall Tool"
+                    label="Herramienta Muro"
                     onSelect={() => activateTool('wall')}
                   />
                   <Item
                     icon={<Layers className="h-4 w-4" />}
                     keywords={['floor', 'build']}
-                    label="Slab Tool"
+                    label="Herramienta Losa"
                     onSelect={() => activateTool('slab')}
                   />
                   <Item
                     icon={<Grid3X3 className="h-4 w-4" />}
                     keywords={['top', 'build']}
-                    label="Ceiling Tool"
+                    label="Herramienta Cielo"
                     onSelect={() => activateTool('ceiling')}
                   />
                   <Item
                     icon={<DoorOpen className="h-4 w-4" />}
                     keywords={['opening', 'entrance']}
-                    label="Door Tool"
+                    label="Herramienta Puerta"
                     onSelect={() => activateTool('door')}
                   />
                   <Item
                     icon={<AppWindow className="h-4 w-4" />}
                     keywords={['opening', 'glass']}
-                    label="Window Tool"
+                    label="Herramienta Ventana"
                     onSelect={() => activateTool('window')}
                   />
                   <Item
                     icon={<Package className="h-4 w-4" />}
                     keywords={['furniture', 'object', 'asset', 'furnish']}
-                    label="Item Tool"
+                    label="Herramienta Ítem"
                     onSelect={() => activateTool('item')}
                   />
                   <Item
                     icon={<Hexagon className="h-4 w-4" />}
                     keywords={['area', 'room', 'space']}
-                    label="Zone Tool"
+                    label="Herramienta Zona"
                     onSelect={() => activateTool('zone')}
                   />
                   <Item
                     disabled={!hasSelection}
                     icon={<Trash2 className="h-4 w-4" />}
                     keywords={['remove', 'erase']}
-                    label="Delete Selection"
+                    label="Eliminar selección"
                     onSelect={deleteSelection}
                     shortcut={['⌫']}
                   />
                 </Command.Group>
 
                 {/* Levels */}
-                <Command.Group heading="Levels">
+                <Command.Group heading="Niveles">
                   <Item
                     disabled={allLevels.length === 0}
                     icon={<ArrowRight className="h-4 w-4" />}
                     keywords={['level', 'floor', 'go', 'navigate', 'switch', 'select']}
-                    label="Go to Level"
+                    label="Ir a nivel"
                     navigate
                     onSelect={() => navigateTo('goto-level')}
                   />
                   <Item
                     icon={<Plus className="h-4 w-4" />}
                     keywords={['level', 'floor', 'add', 'create', 'new']}
-                    label="Add Level"
+                    label="Agregar nivel"
                     onSelect={addLevel}
                   />
                   <Item
                     disabled={!activeLevelId}
                     icon={<PencilLine className="h-4 w-4" />}
                     keywords={['level', 'floor', 'rename', 'name']}
-                    label="Rename Level"
+                    label="Renombrar nivel"
                     navigate
                     onSelect={() => navigateTo('rename-level')}
                   />
@@ -527,31 +527,31 @@ export function CommandPalette() {
                     disabled={!activeLevelId || isLevelZero}
                     icon={<Trash2 className="h-4 w-4" />}
                     keywords={['level', 'floor', 'delete', 'remove']}
-                    label="Delete Level"
+                    label="Eliminar nivel"
                     onSelect={deleteActiveLevel}
                   />
                 </Command.Group>
 
                 {/* Viewer Controls */}
-                <Command.Group heading="Viewer Controls">
+                <Command.Group heading="Controles del visor">
                   <Item
                     badge={wallModeLabel[wallMode]}
                     icon={<Layers className="h-4 w-4" />}
                     keywords={['wall', 'cutaway', 'up', 'down', 'view']}
-                    label="Wall Mode"
+                    label="Modo de muros"
                     onSelect={() => navigateTo('wall-mode')}
                   />
                   <Item
                     badge={levelModeLabel[levelMode]}
                     icon={<SquareStack className="h-4 w-4" />}
                     keywords={['level', 'floor', 'exploded', 'stacked', 'solo']}
-                    label="Level Mode"
+                    label="Modo de niveles"
                     onSelect={() => navigateTo('level-mode')}
                   />
                   <Item
                     icon={<Video className="h-4 w-4" />}
                     keywords={['camera', 'ortho', 'perspective', '2d', '3d', 'view']}
-                    label={`Camera: Switch to ${cameraMode === 'perspective' ? 'Orthographic' : 'Perspective'}`}
+                    label={`Cámara: cambiar a ${cameraMode === 'perspective' ? 'Ortográfica' : 'Perspectiva'}`}
                     onSelect={() =>
                       run(() =>
                         setCameraMode(
@@ -565,26 +565,26 @@ export function CommandPalette() {
                       theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />
                     }
                     keywords={['theme', 'dark', 'light', 'appearance', 'color']}
-                    label={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+                    label={theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
                     onSelect={() => run(() => setTheme(theme === 'dark' ? 'light' : 'dark'))}
                   />
                   <Item
                     icon={<Camera className="h-4 w-4" />}
                     keywords={['camera', 'snapshot', 'capture', 'save', 'view', 'bookmark']}
-                    label="Camera Snapshot"
+                    label="Captura de cámara"
                     navigate
                     onSelect={() => navigateTo('camera-view')}
                   />
                 </Command.Group>
 
                 {/* View / Mode */}
-                <Command.Group heading="View">
+                <Command.Group heading="Vista">
                   <Item
                     icon={
                       isPreviewMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />
                     }
                     keywords={['preview', 'view', 'read-only', 'present']}
-                    label={isPreviewMode ? 'Exit Preview' : 'Enter Preview'}
+                    label={isPreviewMode ? 'Salir de previsualización' : 'Entrar en previsualización'}
                     onSelect={() => run(() => setPreviewMode(!isPreviewMode))}
                   />
                   <Item
@@ -596,55 +596,55 @@ export function CommandPalette() {
                       )
                     }
                     keywords={['fullscreen', 'maximize', 'expand', 'window']}
-                    label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+                    label={isFullscreen ? 'Salir de pantalla completa' : 'Entrar en pantalla completa'}
                     onSelect={toggleFullscreen}
                   />
                 </Command.Group>
 
                 {/* History */}
-                <Command.Group heading="History">
+                <Command.Group heading="Historial">
                   <Item
                     icon={<Undo2 className="h-4 w-4" />}
                     keywords={['undo', 'revert', 'back']}
-                    label="Undo"
+                    label="Deshacer"
                     onSelect={() => run(() => useScene.temporal.getState().undo())}
                     shortcut={[meta, 'Z']}
                   />
                   <Item
                     icon={<Redo2 className="h-4 w-4" />}
                     keywords={['redo', 'forward', 'repeat']}
-                    label="Redo"
+                    label="Rehacer"
                     onSelect={() => run(() => useScene.temporal.getState().redo())}
                     shortcut={[meta, '⇧', 'Z']}
                   />
                 </Command.Group>
 
                 {/* Export / Share */}
-                <Command.Group heading="Export & Share">
+                <Command.Group heading="Exportar y compartir">
                   <Item
                     icon={<FileJson className="h-4 w-4" />}
                     keywords={['export', 'download', 'json', 'save', 'data']}
-                    label="Export Scene (JSON)"
+                    label="Exportar escena (JSON)"
                     onSelect={exportJson}
                   />
                   {exportScene && (
                     <Item
                       icon={<Box className="h-4 w-4" />}
                       keywords={['export', 'glb', 'gltf', '3d', 'model', 'download']}
-                      label="Export 3D Model (GLB)"
+                      label="Exportar modelo 3D (GLB)"
                       onSelect={() => run(() => exportScene())}
                     />
                   )}
                   <Item
                     icon={<Copy className="h-4 w-4" />}
                     keywords={['share', 'copy', 'url', 'link']}
-                    label="Copy Share Link"
+                    label="Copiar enlace"
                     onSelect={copyShareLink}
                   />
                   <Item
                     icon={<Camera className="h-4 w-4" />}
                     keywords={['screenshot', 'capture', 'image', 'photo', 'png']}
-                    label="Take Screenshot"
+                    label="Tomar captura"
                     onSelect={takeScreenshot}
                   />
                 </Command.Group>
@@ -653,7 +653,7 @@ export function CommandPalette() {
 
             {/* ── Wall Mode sub-page ────────────────────────────────────── */}
             {page === 'wall-mode' && (
-              <Command.Group heading="Wall Mode">
+              <Command.Group heading="Modo de muros">
                 {(['cutaway', 'up', 'down'] as const).map((mode) => (
                   <OptionItem
                     isActive={wallMode === mode}
@@ -667,7 +667,7 @@ export function CommandPalette() {
 
             {/* ── Level Mode sub-page ───────────────────────────────────── */}
             {page === 'level-mode' && (
-              <Command.Group heading="Level Mode">
+              <Command.Group heading="Modo de niveles">
                 {(['stacked', 'exploded', 'solo'] as const).map((mode) => (
                   <OptionItem
                     isActive={levelMode === mode}
@@ -681,12 +681,12 @@ export function CommandPalette() {
 
             {/* ── Go to Level sub-page ──────────────────────────────────── */}
             {page === 'goto-level' && (
-              <Command.Group heading="Go to Level">
+              <Command.Group heading="Ir a nivel">
                 {allLevels.map((level) => (
                   <OptionItem
                     isActive={level.id === activeLevelId}
                     key={level.id}
-                    label={level.name ?? `Level ${level.level}`}
+                    label={level.name ?? `Nivel ${level.level}`}
                     onSelect={() =>
                       run(() => useViewer.getState().setSelection({ levelId: level.id }))
                     }
@@ -697,7 +697,7 @@ export function CommandPalette() {
 
             {/* ── Rename Level sub-page ─────────────────────────────────── */}
             {page === 'rename-level' && (
-              <Command.Group heading="Rename Level">
+              <Command.Group heading="Renombrar nivel">
                 <Command.Item
                   className="flex cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-2 text-foreground text-sm transition-colors data-[disabled=true]:cursor-not-allowed data-[selected=true]:bg-accent data-[disabled=true]:opacity-40"
                   disabled={!inputValue.trim()}
@@ -710,10 +710,10 @@ export function CommandPalette() {
                   <span className="flex-1 truncate">
                     {inputValue.trim() ? (
                       <>
-                        Rename to <span className="font-medium">"{inputValue.trim()}"</span>
+                        Renombrar a <span className="font-medium">"{inputValue.trim()}"</span>
                       </>
                     ) : (
-                      <span className="text-muted-foreground">Type a new name above…</span>
+                      <span className="text-muted-foreground">Escribe un nombre arriba…</span>
                     )}
                   </span>
                 </Command.Item>
@@ -722,41 +722,41 @@ export function CommandPalette() {
 
             {/* ── Camera Snapshot: scope picker ─────────────────────────── */}
             {page === 'camera-view' && (
-              <Command.Group heading="Camera Snapshot — Select Scope">
+              <Command.Group heading="Captura de cámara — Seleccionar alcance">
                 <OptionItem
                   icon={<Map className="h-4 w-4" />}
-                  label="Site"
+                  label="Sitio"
                   onSelect={() => {
                     const { rootNodeIds } = useScene.getState()
                     const siteId = rootNodeIds[0]
-                    if (siteId) navigateToCameraScope(siteId, 'Site')
+                    if (siteId) navigateToCameraScope(siteId, 'Sitio')
                   }}
                 />
                 <OptionItem
                   icon={<Building2 className="h-4 w-4" />}
-                  label="Building"
+                  label="Edificio"
                   onSelect={() => {
                     const building = Object.values(useScene.getState().nodes).find(
                       (n) => n.type === 'building',
                     )
-                    if (building) navigateToCameraScope(building.id, 'Building')
+                    if (building) navigateToCameraScope(building.id, 'Edificio')
                   }}
                 />
                 <OptionItem
                   disabled={!activeLevelId}
                   icon={<Layers className="h-4 w-4" />}
-                  label="Level"
+                  label="Nivel"
                   onSelect={() => {
-                    if (activeLevelId) navigateToCameraScope(activeLevelId, 'Level')
+                    if (activeLevelId) navigateToCameraScope(activeLevelId, 'Nivel')
                   }}
                 />
                 <OptionItem
                   disabled={!hasSelection}
                   icon={<MousePointer2 className="h-4 w-4" />}
-                  label="Selection"
+                  label="Selección"
                   onSelect={() => {
                     const firstId = selection.selectedIds[0]
-                    if (firstId) navigateToCameraScope(firstId, 'Selection')
+                    if (firstId) navigateToCameraScope(firstId, 'Selección')
                   }}
                 />
               </Command.Group>
@@ -764,23 +764,23 @@ export function CommandPalette() {
 
             {/* ── Camera Snapshot: actions for selected scope ───────────── */}
             {page === 'camera-scope' && cameraScope && (
-              <Command.Group heading={`${cameraScope.label} Snapshot`}>
+              <Command.Group heading={`Captura de ${cameraScope.label}`}>
                 <OptionItem
                   icon={<Camera className="h-4 w-4" />}
-                  label={hasScopeSnapshot ? 'Update Snapshot' : 'Take Snapshot'}
+                  label={hasScopeSnapshot ? 'Actualizar captura' : 'Tomar captura'}
                   onSelect={takeSnapshot}
                 />
                 {hasScopeSnapshot && (
                   <OptionItem
                     icon={<Eye className="h-4 w-4" />}
-                    label="View Snapshot"
+                    label="Ver captura"
                     onSelect={viewSnapshot}
                   />
                 )}
                 {hasScopeSnapshot && (
                   <OptionItem
                     icon={<Trash2 className="h-4 w-4" />}
-                    label="Clear Snapshot"
+                    label="Borrar captura"
                     onSelect={clearSnapshot}
                   />
                 )}
@@ -791,18 +791,18 @@ export function CommandPalette() {
           {/* Footer hint */}
           <div className="flex items-center justify-between border-border/50 border-t px-3 py-2">
             <span className="text-[11px] text-muted-foreground">
-              <Shortcut keys={['↑', '↓']} /> navigate
+              <Shortcut keys={['↑', '↓']} /> navegar
             </span>
             <span className="text-[11px] text-muted-foreground">
-              <Shortcut keys={['↵']} /> select
+              <Shortcut keys={['↵']} /> seleccionar
             </span>
             {page ? (
               <span className="text-[11px] text-muted-foreground">
-                <Shortcut keys={['⌫']} /> back
+                <Shortcut keys={['⌫']} /> volver
               </span>
             ) : (
               <span className="text-[11px] text-muted-foreground">
-                <Shortcut keys={['Esc']} /> close
+                <Shortcut keys={['Esc']} /> cerrar
               </span>
             )}
           </div>

@@ -4,12 +4,13 @@ import { useScene } from '@pascal-app/core'
 import { Editor, useEditor } from '@pascal-app/editor'
 import type { SceneGraph } from '@pascal-app/editor'
 import { useViewer } from '@pascal-app/viewer'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 type SugopOpenContextPayload = {
   entityType: string
-  entityId: string
-  readOnly: boolean
+  entityId: number | string
+  readOnly?: boolean | string | number | null
+  fileId?: number | null
   fileName?: string
   initialContent?: string | SceneGraph
   folder?: string
@@ -18,7 +19,8 @@ type SugopOpenContextPayload = {
 
 type SugopContextState = {
   entityType: string | null
-  entityId: string | null
+  entityId: number | string | null
+  fileId: number | null
   readOnly: boolean
   fileName: string
   folder: string
@@ -27,13 +29,14 @@ type SugopContextState = {
   version: number
 }
 
-const DEFAULT_FILE_NAME = 'editor.txt'
-const DEFAULT_FOLDER = 'Editor'
+const DEFAULT_FILE_NAME = ''
+const DEFAULT_FOLDER = '3d-editor'
 const DEFAULT_CONTENT_TYPE = 'text/plain;charset=utf-8'
 
 const createDefaultContext = (): SugopContextState => ({
   entityType: null,
   entityId: null,
+  fileId: null,
   readOnly: false,
   fileName: DEFAULT_FILE_NAME,
   folder: DEFAULT_FOLDER,
@@ -97,6 +100,7 @@ export default function Home() {
   const [saveNotice, setSaveNotice] = useState<string | null>(null)
   const [isAuthorizedEmbed, setIsAuthorizedEmbed] = useState(false)
   const [accessError, setAccessError] = useState<string | null>(null)
+  const hasRequestedContext = useRef(false)
 
   const allowedOrigins = useMemo(
     () => parseAllowedOrigins(process.env.NEXT_PUBLIC_ALLOWED_PARENT_ORIGIN),
@@ -123,11 +127,6 @@ export default function Home() {
       return
     }
 
-    if (context.readOnly) {
-      setSaveNotice('El contexto está en modo solo lectura.')
-      return
-    }
-
     if (!targetOrigin) {
       setSaveNotice('Configura NEXT_PUBLIC_SUGOP_TARGET_ORIGIN para habilitar guardado.')
       return
@@ -151,13 +150,16 @@ export default function Home() {
     }
 
     const content = JSON.stringify(sceneGraph, null, 2)
-    const fileName = options?.fileName?.trim() || context.fileName || DEFAULT_FILE_NAME
+    const fileName = options?.fileName?.trim() || context.fileName || undefined
 
     window.parent.postMessage(
       {
-        type: 'sugop-editor:save',
+        type: 'sugop-3d-editor:save',
         payload: {
           content,
+          ...(typeof context.fileId === 'number' && context.fileId > 0
+            ? { fileId: context.fileId }
+            : {}),
           fileName,
           displayName: context.displayName,
           folder: context.folder || DEFAULT_FOLDER,
@@ -172,7 +174,23 @@ export default function Home() {
     }
 
     setSaveNotice('Contenido enviado a SUGOP.')
-  }, [context.displayName, context.fileName, context.folder, context.readOnly, isAuthorizedEmbed, targetOrigin])
+  }, [
+    context.displayName,
+    context.fileId,
+    context.fileName,
+    context.folder,
+    isAuthorizedEmbed,
+    targetOrigin,
+  ])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (window.self === window.top) return
+    if (!targetOrigin || hasRequestedContext.current) return
+
+    window.parent.postMessage({ type: 'sugop-3d-editor:request-context' }, targetOrigin)
+    hasRequestedContext.current = true
+  }, [targetOrigin])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -204,7 +222,7 @@ export default function Home() {
       const data = event.data as { type?: string; payload?: SugopOpenContextPayload } | null
       if (!data?.type) return
 
-      if (data.type === 'sugop-editor:open-context') {
+      if (data.type === 'sugop-3d-editor:open-context') {
         const payload = data.payload
         if (!payload) return
 
@@ -227,8 +245,9 @@ export default function Home() {
         setContext((prev) => ({
           entityType: payload.entityType,
           entityId: payload.entityId,
-          readOnly: !!payload.readOnly,
-          fileName: payload.fileName?.trim() || DEFAULT_FILE_NAME,
+          fileId: typeof payload.fileId === 'number' ? payload.fileId : null,
+          readOnly: false,
+          fileName: payload.fileName?.trim() || '',
           folder: payload.folder?.trim() || DEFAULT_FOLDER,
           displayName: payload.displayName,
           initialContent: sceneGraph ? JSON.stringify(sceneGraph) : undefined,
@@ -238,7 +257,7 @@ export default function Home() {
         return
       }
 
-      if (data.type === 'sugop-editor:trigger-save') {
+      if (data.type === 'sugop-3d-editor:trigger-save') {
         saveToSugop()
       }
     }

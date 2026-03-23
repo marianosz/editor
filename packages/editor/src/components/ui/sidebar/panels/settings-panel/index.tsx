@@ -188,6 +188,9 @@ export function SettingsPanel({
   const resetSelection = useViewer((state) => state.resetSelection)
   const exportScene = useViewer((state) => state.exportScene)
   const setPhase = useEditor((state) => state.setPhase)
+  const setMode = useEditor((state) => state.setMode)
+  const setTool = useEditor((state) => state.setTool)
+  const setStructureLayer = useEditor((state) => state.setStructureLayer)
   const [isGeneratingThumbnail, setIsGeneratingThumbnail] = useState(false)
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false)
   const [saveFileName, setSaveFileName] = useState('')
@@ -242,6 +245,7 @@ export function SettingsPanel({
 
   const handleConfirmSugopSave = () => {
     const fileName = saveFileName.trim()
+    if (!fileName) return
     onSugopSave?.(fileName || undefined)
     setIsSaveDialogOpen(false)
   }
@@ -249,7 +253,10 @@ export function SettingsPanel({
   const handleResetToDefault = () => {
     clearScene()
     resetSelection()
-    setPhase('site')
+    setPhase('structure')
+    setStructureLayer('elements')
+    setMode('build')
+    setTool('wall')
     setSaveFileName('')
     onSugopFileNameReset?.()
   }
@@ -385,7 +392,7 @@ export function SettingsPanel({
                 <Button onClick={() => setIsSaveDialogOpen(false)} type="button" variant="outline">
                   Cancelar
                 </Button>
-                <Button onClick={handleConfirmSugopSave} type="button">
+                <Button disabled={!saveFileName.trim()} onClick={handleConfirmSugopSave} type="button">
                   Guardar
                 </Button>
               </div>
