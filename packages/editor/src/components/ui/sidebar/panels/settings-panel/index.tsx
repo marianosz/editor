@@ -45,6 +45,8 @@ type SceneGraphValue = {
   detachedNodes?: SceneGraphNode[]
 }
 
+const SHOW_SCENE_GRAPH_OPTION = false
+
 const isSceneNode = (value: unknown): value is SceneNode => {
   return (
     typeof value === 'object' &&
@@ -403,31 +405,34 @@ export function SettingsPanel({
         <KeyboardShortcutsDialog />
       </div>
 
-      {/* Scene Graph */}
-      <div className="space-y-1">
-        <label className="font-medium text-muted-foreground text-xs uppercase">Árbol de escena</label>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="h-auto justify-start p-0 text-sm" variant="link">
-              Explorar árbol de escena
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="h-[80vh] max-w-[95vw] gap-0 overflow-hidden border-0 bg-[#1e1e1e] p-0 shadow-none sm:max-w-5xl">
-            <DialogTitle className="sr-only">Árbol de escena</DialogTitle>
-            <div
-              className="flex h-full min-h-0 w-full min-w-0 *:h-full *:w-full *:overflow-y-auto"
-              onContextMenuCapture={blockSceneGraphMutations}
-              onDragStartCapture={blockSceneGraphMutations}
-              onDropCapture={blockSceneGraphMutations}
-              onKeyDownCapture={blockSceneGraphDeletion}
-            >
-              <VisualJson value={sceneGraphValue}>
-                <TreeView showCounts />
-              </VisualJson>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+      {SHOW_SCENE_GRAPH_OPTION && (
+        <div className="space-y-1">
+          <label className="font-medium text-muted-foreground text-xs uppercase">
+            Árbol de escena
+          </label>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="h-auto justify-start p-0 text-sm" variant="link">
+                Explorar árbol de escena
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="h-[80vh] max-w-[95vw] gap-0 overflow-hidden border-0 bg-[#1e1e1e] p-0 shadow-none sm:max-w-5xl">
+              <DialogTitle className="sr-only">Árbol de escena</DialogTitle>
+              <div
+                className="flex h-full min-h-0 w-full min-w-0 *:h-full *:w-full *:overflow-y-auto"
+                onContextMenuCapture={blockSceneGraphMutations}
+                onDragStartCapture={blockSceneGraphMutations}
+                onDropCapture={blockSceneGraphMutations}
+                onKeyDownCapture={blockSceneGraphDeletion}
+              >
+                <VisualJson value={sceneGraphValue}>
+                  <TreeView showCounts />
+                </VisualJson>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+      )}
 
       {/* Danger Zone */}
       <div className="space-y-2">
