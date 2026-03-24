@@ -25,9 +25,6 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
-    loader: 'custom',
-    loaderFile: './image-loader.ts',
-    path: `${basePath}/_next/image`,
     unoptimized: process.env.NEXT_PUBLIC_ASSETS_CDN_URL?.startsWith('http://localhost') ?? false,
     remotePatterns: [
       {
