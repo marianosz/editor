@@ -8,6 +8,13 @@ const nextConfig: NextConfig = {
   basePath,
   output: 'standalone',
   outputFileTracingRoot: workspaceRoot,
+  outputFileTracingIncludes: {
+    '/*': [
+      '../editor/**/*',
+      '../viewer/**/*',
+      '../core/**/*',
+    ],
+  },
   devIndicators: false,
   typescript: {
     ignoreBuildErrors: true,
