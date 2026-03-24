@@ -2,7 +2,7 @@
 
 import { useViewer } from '@pascal-app/viewer'
 import { Box, Camera, Diamond, Image, Layers, Layers2 } from 'lucide-react'
-import { cn } from '../../../lib/utils'
+import { cn, withBasePath } from '../../../lib/utils'
 import { ActionButton } from './action-button'
 
 const levelModeLabels: Record<'stacked' | 'exploded' | 'solo', string> = {
@@ -21,18 +21,18 @@ const wallModeConfig: Record<
 > = {
   up: {
     icon: (props) => (
-      <img alt="Altura completa" height={20} src="/icons/room.png" width={20} {...props} />
+      <img alt="Altura completa" height={20} src={withBasePath('/icons/room.png')} width={20} {...props} />
     ),
     label: 'Altura completa',
   },
   cutaway: {
     icon: (props) => (
-      <img alt="Corte" height={20} src="/icons/wallcut.png" width={20} {...props} />
+      <img alt="Corte" height={20} src={withBasePath('/icons/wallcut.png')} width={20} {...props} />
     ),
     label: 'Corte',
   },
   down: {
-    icon: (props) => <img alt="Bajo" height={20} src="/icons/walllow.png" width={20} {...props} />,
+    icon: (props) => <img alt="Bajo" height={20} src={withBasePath('/icons/walllow.png')} width={20} {...props} />,
     label: 'Bajo',
   },
 }
@@ -137,7 +137,7 @@ export function ViewToggles() {
         size="icon"
         variant="ghost"
       >
-        <img alt="Escaneos" className="h-[28px] w-[28px] object-contain" src="/icons/mesh.png" />
+        <img alt="Escaneos" className="h-[28px] w-[28px] object-contain" src={withBasePath('/icons/mesh.png')} />
       </ActionButton>
 
       {/* Show Guides */}
@@ -153,7 +153,7 @@ export function ViewToggles() {
         size="icon"
         variant="ghost"
       >
-        <img alt="Guías" className="h-[28px] w-[28px] object-contain" src="/icons/floorplan.png" />
+        <img alt="Guías" className="h-[28px] w-[28px] object-contain" src={withBasePath('/icons/floorplan.png')} />
       </ActionButton>
     </div>
   )

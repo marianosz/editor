@@ -34,7 +34,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from './../../../../../components/ui/primitives/popover'
-import { cn } from './../../../../../lib/utils'
+import { cn, withBasePath } from './../../../../../lib/utils'
 import useEditor from './../../../../../store/use-editor'
 import { useUploadStore } from '../../../../../store/use-upload'
 import { InlineRenameInput } from './inline-rename-input'
@@ -340,13 +340,13 @@ function ReferenceItem({
           <img
             alt="Scan"
             className="h-3.5 w-3.5 shrink-0 object-contain opacity-70 transition-opacity group-hover/ref:opacity-100"
-            src="/icons/mesh.png"
+            src={withBasePath('/icons/mesh.png')}
           />
         ) : (
           <img
             alt="Guide"
             className="h-3.5 w-3.5 shrink-0 object-contain opacity-70 transition-opacity group-hover/ref:opacity-100"
-            src="/icons/floorplan.png"
+            src={withBasePath('/icons/floorplan.png')}
           />
         )}
         <InlineRenameInput
@@ -646,7 +646,7 @@ function LevelItem({
               'h-4 w-4 shrink-0 object-contain transition-all duration-200',
               !isSelected && 'opacity-60 grayscale',
             )}
-            src="/icons/level.png"
+            src={withBasePath('/icons/level.png')}
           />
           <InlineRenameInput
             defaultName={`Level ${level.level}`}
@@ -899,7 +899,7 @@ function LayerToggle() {
               'mb-1 h-6 w-6 transition-all',
               activeTab !== 'structure' && 'opacity-50 grayscale',
             )}
-            src="/icons/room.png"
+            src={withBasePath('/icons/room.png')}
           />
           Estructura
         </div>
@@ -936,7 +936,7 @@ function LayerToggle() {
               'mb-1 h-6 w-6 transition-all',
               activeTab !== 'furnish' && 'opacity-50 grayscale',
             )}
-            src="/icons/couch.png"
+            src={withBasePath('/icons/couch.png')}
           />
           Amoblar
         </div>
@@ -974,7 +974,7 @@ function LayerToggle() {
               'mb-1 h-6 w-6 transition-all',
               activeTab !== 'zones' && 'opacity-50 grayscale',
             )}
-            src="/icons/kitchen.png"
+            src={withBasePath('/icons/kitchen.png')}
           />
           Zonas
         </div>
@@ -1311,7 +1311,7 @@ function BuildingItem({
               'h-5 w-5 object-contain transition-all',
               !isBuildingActive && 'opacity-60 grayscale',
             )}
-            src="/icons/building.png"
+            src={withBasePath('/icons/building.png')}
           />
           <span className="truncate font-medium text-sm">{building.name || 'Edificio'}</span>
         </button>
@@ -1464,7 +1464,7 @@ export function SitePanel({ projectId, onUploadAsset, onDeleteAsset }: SitePanel
                   'h-5 w-5 object-contain transition-all',
                   phase !== 'site' && 'opacity-60 grayscale',
                 )}
-                src="/icons/site.png"
+                src={withBasePath('/icons/site.png')}
               />
               <span className="font-medium text-sm">{siteNode.name || 'Site'}</span>
             </div>

@@ -2,6 +2,7 @@ import { type AnyNodeId, type CeilingNode, useScene } from '@pascal-app/core'
 import { useViewer } from '@pascal-app/viewer'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { withBasePath } from './../../../../../lib/utils'
 import useEditor from './../../../../../store/use-editor'
 import { InlineRenameInput } from './inline-rename-input'
 import { handleTreeSelection, TreeNode, TreeNodeWrapper } from './tree-node'
@@ -73,7 +74,13 @@ export function CeilingTreeNode({ node, depth, isLast }: CeilingTreeNodeProps) {
       expanded={expanded}
       hasChildren={node.children.length > 0}
       icon={
-        <Image alt="" className="object-contain" height={14} src="/icons/ceiling.png" width={14} />
+        <Image
+          alt=""
+          className="object-contain"
+          height={14}
+          src={withBasePath('/icons/ceiling.png')}
+          width={14}
+        />
       }
       isHovered={isHovered}
       isLast={isLast}

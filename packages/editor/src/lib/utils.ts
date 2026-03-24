@@ -13,6 +13,27 @@ export const isProduction =
 
 export const isPreview = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
 
+const APP_BASE_PATH = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/\/+$/, '')
+
+export function withBasePath(path: string): string {
+  if (!path || !APP_BASE_PATH) return path
+
+  if (
+    /^(https?:)?\/\//.test(path) ||
+    path.startsWith('data:') ||
+    path.startsWith('blob:') ||
+    path.startsWith(APP_BASE_PATH)
+  ) {
+    return path
+  }
+
+  if (path.startsWith('/')) {
+    return `${APP_BASE_PATH}${path}`
+  }
+
+  return path
+}
+
 /**
  * Base URL for the application
  * Uses NEXT_PUBLIC_* variables which are available at build time

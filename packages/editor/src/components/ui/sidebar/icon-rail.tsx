@@ -9,7 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from './../../../components/ui/primitives/tooltip'
-import { cn } from './../../../lib/utils'
+import { cn, withBasePath } from './../../../lib/utils'
 
 export type PanelId = 'site' | 'settings'
 
@@ -21,8 +21,8 @@ interface IconRailProps {
 }
 
 const panels: { id: PanelId; iconSrc: string; label: string }[] = [
-  { id: 'site', iconSrc: '/icons/level.png', label: 'Sitio' },
-  { id: 'settings', iconSrc: '/icons/settings.png', label: 'Ajustes' },
+  { id: 'site', iconSrc: withBasePath('/icons/level.png'), label: 'Sitio' },
+  { id: 'settings', iconSrc: withBasePath('/icons/settings.png'), label: 'Ajustes' },
 ]
 
 export function IconRail({ activePanel, onPanelChange, appMenuButton, className }: IconRailProps) {

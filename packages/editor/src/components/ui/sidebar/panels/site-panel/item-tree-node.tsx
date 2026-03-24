@@ -2,19 +2,20 @@ import { type AnyNodeId, type ItemNode, useScene } from '@pascal-app/core'
 import { useViewer } from '@pascal-app/viewer'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { withBasePath } from './../../../../../lib/utils'
 import useEditor from './../../../../../store/use-editor'
 import { InlineRenameInput } from './inline-rename-input'
 import { handleTreeSelection, TreeNode, TreeNodeWrapper } from './tree-node'
 import { TreeNodeActions } from './tree-node-actions'
 
 const CATEGORY_ICONS: Record<string, string> = {
-  door: '/icons/door.png',
-  window: '/icons/window.png',
-  furniture: '/icons/couch.png',
-  appliance: '/icons/appliance.png',
-  kitchen: '/icons/kitchen.png',
-  bathroom: '/icons/bathroom.png',
-  outdoor: '/icons/tree.png',
+  door: withBasePath('/icons/door.png'),
+  window: withBasePath('/icons/window.png'),
+  furniture: withBasePath('/icons/couch.png'),
+  appliance: withBasePath('/icons/appliance.png'),
+  kitchen: withBasePath('/icons/kitchen.png'),
+  bathroom: withBasePath('/icons/bathroom.png'),
+  outdoor: withBasePath('/icons/tree.png'),
 }
 
 interface ItemTreeNodeProps {
@@ -26,7 +27,7 @@ interface ItemTreeNodeProps {
 export function ItemTreeNode({ node, depth, isLast }: ItemTreeNodeProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [expanded, setExpanded] = useState(true)
-  const iconSrc = CATEGORY_ICONS[node.asset.category] || '/icons/couch.png'
+  const iconSrc = CATEGORY_ICONS[node.asset.category] || withBasePath('/icons/couch.png')
   const selectedIds = useViewer((state) => state.selection.selectedIds)
   const isSelected = selectedIds.includes(node.id)
   const isHovered = useViewer((state) => state.hoveredId === node.id)

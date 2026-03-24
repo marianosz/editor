@@ -2,6 +2,7 @@ import type { SlabNode } from '@pascal-app/core'
 import { useViewer } from '@pascal-app/viewer'
 import Image from 'next/image'
 import { useState } from 'react'
+import { withBasePath } from './../../../../../lib/utils'
 import useEditor from './../../../../../store/use-editor'
 import { InlineRenameInput } from './inline-rename-input'
 import { handleTreeSelection, TreeNodeWrapper } from './tree-node'
@@ -52,7 +53,13 @@ export function SlabTreeNode({ node, depth, isLast }: SlabTreeNodeProps) {
       expanded={false}
       hasChildren={false}
       icon={
-        <Image alt="" className="object-contain" height={14} src="/icons/floor.png" width={14} />
+        <Image
+          alt=""
+          className="object-contain"
+          height={14}
+          src={withBasePath('/icons/floor.png')}
+          width={14}
+        />
       }
       isHovered={isHovered}
       isLast={isLast}

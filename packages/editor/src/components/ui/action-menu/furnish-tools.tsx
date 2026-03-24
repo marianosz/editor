@@ -1,7 +1,7 @@
 'use client'
 
 import NextImage from 'next/image'
-import { cn } from './../../../lib/utils'
+import { cn, withBasePath } from './../../../lib/utils'
 import useEditor, { type CatalogCategory } from './../../../store/use-editor'
 import { ActionButton } from './action-button'
 
@@ -16,31 +16,31 @@ export type FurnishToolConfig = {
 export const furnishTools: FurnishToolConfig[] = [
   {
     id: 'item',
-    iconSrc: '/icons/couch.png',
+    iconSrc: withBasePath('/icons/couch.png'),
     label: 'Furniture',
     catalogCategory: 'furniture',
   },
   {
     id: 'item',
-    iconSrc: '/icons/appliance.png',
+    iconSrc: withBasePath('/icons/appliance.png'),
     label: 'Appliance',
     catalogCategory: 'appliance',
   },
   {
     id: 'item',
-    iconSrc: '/icons/kitchen.png',
+    iconSrc: withBasePath('/icons/kitchen.png'),
     label: 'Kitchen',
     catalogCategory: 'kitchen',
   },
   {
     id: 'item',
-    iconSrc: '/icons/bathroom.png',
+    iconSrc: withBasePath('/icons/bathroom.png'),
     label: 'Bathroom',
     catalogCategory: 'bathroom',
   },
   {
     id: 'item',
-    iconSrc: '/icons/tree.png',
+    iconSrc: withBasePath('/icons/tree.png'),
     label: 'Outdoor',
     catalogCategory: 'outdoor',
   },

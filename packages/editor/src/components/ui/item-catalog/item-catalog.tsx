@@ -9,7 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from './../../../components/ui/primitives/tooltip'
-import { cn } from './../../../lib/utils'
+import { cn, withBasePath } from './../../../lib/utils'
 import useEditor, { type CatalogCategory } from './../../../store/use-editor'
 import { CATALOG_ITEMS } from './catalog-items'
 
@@ -65,10 +65,10 @@ export function ItemCatalog({ category }: { category: CatalogCategory }) {
   // Get attachment icon based on attachTo type
   const getAttachmentIcon = (attachTo: AssetInput['attachTo']) => {
     if (attachTo === 'wall' || attachTo === 'wall-side') {
-      return '/icons/wall.png'
+      return withBasePath('/icons/wall.png')
     }
     if (attachTo === 'ceiling') {
-      return '/icons/ceiling.png'
+      return withBasePath('/icons/ceiling.png')
     }
     return null
   }

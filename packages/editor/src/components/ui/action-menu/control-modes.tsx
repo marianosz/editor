@@ -2,7 +2,7 @@
 
 import { type LucideIcon, Pencil, Trash2 } from 'lucide-react'
 import Image from 'next/image'
-import { cn } from './../../../lib/utils'
+import { cn, withBasePath } from './../../../lib/utils'
 import useEditor, { type Mode, type Phase } from './../../../store/use-editor'
 import { ActionButton } from './action-button'
 
@@ -20,7 +20,7 @@ type ModeConfig = {
 const allModes: ModeConfig[] = [
   {
     id: 'select',
-    imageSrc: '/icons/select.png',
+    imageSrc: withBasePath('/icons/select.png'),
     label: 'Seleccionar',
     shortcut: 'V',
     color: 'hover:bg-blue-500/20 hover:text-blue-400',
@@ -36,7 +36,7 @@ const allModes: ModeConfig[] = [
   },
   {
     id: 'build',
-    imageSrc: '/icons/build.png',
+    imageSrc: withBasePath('/icons/build.png'),
     label: 'Construir',
     shortcut: 'B',
     color: 'hover:bg-green-500/20 hover:text-green-400',

@@ -2,6 +2,7 @@
 
 import { emitter } from '@pascal-app/core'
 import Image from 'next/image'
+import { withBasePath } from '../../../lib/utils'
 import { ActionButton } from './action-button'
 
 export function CameraActions() {
@@ -31,7 +32,7 @@ export function CameraActions() {
           alt="Orbitar izquierda"
           className="h-[28px] w-[28px] -scale-x-100 object-contain opacity-70 transition-opacity group-hover:opacity-100"
           height={28}
-          src="/icons/rotate.png"
+          src={withBasePath('/icons/rotate.png')}
           width={28}
         />
       </ActionButton>
@@ -48,7 +49,7 @@ export function CameraActions() {
           alt="Orbitar derecha"
           className="h-[28px] w-[28px] object-contain opacity-70 transition-opacity group-hover:opacity-100"
           height={28}
-          src="/icons/rotate.png"
+          src={withBasePath('/icons/rotate.png')}
           width={28}
         />
       </ActionButton>
@@ -65,7 +66,7 @@ export function CameraActions() {
           alt="Vista superior"
           className="h-[28px] w-[28px] object-contain opacity-70 transition-opacity group-hover:opacity-100"
           height={28}
-          src="/icons/topview.png"
+          src={withBasePath('/icons/topview.png')}
           width={28}
         />
       </ActionButton>
