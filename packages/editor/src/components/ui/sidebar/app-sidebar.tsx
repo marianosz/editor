@@ -27,6 +27,7 @@ export function AppSidebar({
   sitePanelProps,
 }: AppSidebarProps) {
   const [activePanel, setActivePanel] = useState<PanelId>('site')
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   useEffect(() => {
     // Widen default sidebar (288px → 432px) for better project title visibility
@@ -47,6 +48,16 @@ export function AppSidebar({
     }
   }
 
+  const handlePanelChange = (panel: PanelId) => {
+    if (panel === activePanel) {
+      setIsCollapsed((prev) => !prev)
+      return
+    }
+
+    setActivePanel(panel)
+    setIsCollapsed(false)
+  }
+
   return (
     <>
       <Sidebar className={cn('dark text-white')} variant="floating">
@@ -55,11 +66,16 @@ export function AppSidebar({
           <IconRail
             activePanel={activePanel}
             appMenuButton={appMenuButton}
-            onPanelChange={setActivePanel}
+            onPanelChange={handlePanelChange}
           />
 
           {/* Panel Content */}
-          <div className="flex flex-1 flex-col overflow-hidden">
+          <div
+            className={cn(
+              'flex flex-1 flex-col overflow-hidden transition-[max-width,opacity] duration-200 ease-linear',
+              isCollapsed && 'pointer-events-none max-w-0 opacity-0',
+            )}
+          >
             {sidebarTop && (
               <SidebarHeader className="relative flex-col items-start justify-center gap-1 border-border/50 border-b px-3 py-3">
                 {sidebarTop}
