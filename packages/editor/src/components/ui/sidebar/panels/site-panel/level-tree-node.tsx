@@ -27,7 +27,7 @@ export function LevelTreeNode({ node, depth, isLast }: LevelTreeNodeProps) {
     setIsEditing(true)
   }
 
-  const defaultName = `Level ${node.level}`
+  const defaultName = `Nivel ${node.level}`
 
   return (
     <TreeNodeWrapper

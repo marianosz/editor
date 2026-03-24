@@ -179,7 +179,7 @@ export function CollectionsPopover({ nodeId, collectionIds, children }: Collecti
                       key={collection.id}
                     >
                       <span className="truncate text-foreground/80 text-xs">
-                        Delete "{collection.name}"?
+                        ¿Eliminar "{collection.name}"?
                       </span>
                       <div className="flex shrink-0 items-center gap-1">
                         <button
@@ -190,14 +190,14 @@ export function CollectionsPopover({ nodeId, collectionIds, children }: Collecti
                           }}
                           type="button"
                         >
-                          Delete
+                          Eliminar
                         </button>
                         <button
                           className="rounded-md px-2 py-0.5 font-medium text-[11px] text-muted-foreground transition-colors hover:bg-white/10"
                           onClick={() => setDeletingId(null)}
                           type="button"
                         >
-                          Cancel
+                          Cancelar
                         </button>
                       </div>
                     </li>

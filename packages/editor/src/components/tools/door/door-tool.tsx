@@ -213,7 +213,7 @@ export const DoorTool: React.FC = () => {
         const wall = n.parentId ? state.nodes[n.parentId as AnyNodeId] : undefined
         return wall?.parentId === levelId
       }).length
-      const name = `Door ${doorCount + 1}`
+      const name = `Puerta ${doorCount + 1}`
 
       const node = DoorNode.parse({
         name,

@@ -228,7 +228,7 @@ export function FeedbackDialog({
                   type="button"
                 >
                   <ImageIcon className="h-3.5 w-3.5" />
-                  {images.length > 0 ? `${images.length}/${MAX_IMAGES}` : 'Attach'}
+                  {images.length > 0 ? `${images.length}/${MAX_IMAGES}` : 'Adjuntar'}
                 </button>
                 <input
                   accept="image/*"
@@ -249,10 +249,10 @@ export function FeedbackDialog({
                     type="button"
                     variant="outline"
                   >
-                    Cancel
+                    Cancelar
                   </Button>
                   <Button disabled={isSubmitting || !message.trim() || !onSubmit} type="submit">
-                    {isSubmitting ? 'Sending...' : 'Send Feedback'}
+                    {isSubmitting ? 'Enviando...' : 'Enviar comentario'}
                   </Button>
                 </div>
               </div>

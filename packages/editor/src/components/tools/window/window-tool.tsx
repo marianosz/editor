@@ -227,7 +227,7 @@ export const WindowTool: React.FC = () => {
         const wall = n.parentId ? state.nodes[n.parentId as AnyNodeId] : undefined
         return wall?.parentId === levelId
       }).length
-      const name = `Window ${windowCount + 1}`
+      const name = `Ventana ${windowCount + 1}`
 
       const node = WindowNode.parse({
         name,

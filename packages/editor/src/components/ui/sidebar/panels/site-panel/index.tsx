@@ -640,8 +640,8 @@ function LevelItem({
           onClick={() => setSelection({ levelId: level.id })}
           onDoubleClick={() => setIsEditing(true)}
         >
-          <img
-            alt="Level"
+                <img
+                  alt="Nivel"
             className={cn(
               'h-4 w-4 shrink-0 object-contain transition-all duration-200',
               !isSelected && 'opacity-60 grayscale',
@@ -649,7 +649,7 @@ function LevelItem({
             src={withBasePath('/icons/level.png')}
           />
           <InlineRenameInput
-            defaultName={`Level ${level.level}`}
+            defaultName={`Nivel ${level.level}`}
             isEditing={isEditing}
             node={level}
             onStartEditing={() => setIsEditing(true)}
@@ -667,7 +667,6 @@ function LevelItem({
                   : 'text-muted-foreground hover:bg-accent hover:text-foreground',
               )}
               onClick={(e) => e.stopPropagation()}
-              title="Camera snapshot"
               title="Captura de cámara"
             >
               <Camera className="h-3.5 w-3.5" />
@@ -824,7 +823,6 @@ function LevelsSection({
           <div className="relative z-10 flex items-center pr-1 pl-[38px]">
             <Plus className="h-3.5 w-3.5" />
           </div>
-          <span className="truncate">Add level</span>
           <span className="truncate">Agregar nivel</span>
         </button>
         {levels.length === 0 && (
@@ -893,7 +891,6 @@ function LayerToggle() {
         )}
         <div className="relative z-10 flex flex-col items-center">
           <img
-            alt="Structure"
             alt="Estructura"
             className={cn(
               'mb-1 h-6 w-6 transition-all',
@@ -930,7 +927,6 @@ function LayerToggle() {
         )}
         <div className="relative z-10 flex flex-col items-center">
           <img
-            alt="Furnish"
             alt="Amoblar"
             className={cn(
               'mb-1 h-6 w-6 transition-all',
@@ -968,7 +964,6 @@ function LayerToggle() {
         )}
         <div className="relative z-10 flex flex-col items-center">
           <img
-            alt="Zones"
             alt="Zonas"
             className={cn(
               'mb-1 h-6 w-6 transition-all',
@@ -1012,7 +1007,7 @@ function ZoneItem({ zone, isLast }: { zone: ZoneNode; isLast?: boolean }) {
   }, [isSelected])
 
   const area = calculatePolygonArea(zone.polygon).toFixed(1)
-  const defaultName = `Zone (${area}m²)`
+  const defaultName = `Zona (${area}m²)`
 
   const handleClick = () => {
     setSelection({ zoneId: zone.id })
@@ -1328,7 +1323,7 @@ function BuildingItem({
                   : 'text-muted-foreground hover:bg-accent hover:text-foreground',
               )}
               onClick={(e) => e.stopPropagation()}
-              title="Camera snapshot"
+              title="Captura de cámara"
             >
               <Camera className="h-4 w-4" />
               {building.camera && (
@@ -1353,7 +1348,7 @@ function BuildingItem({
                   }}
                 >
                   <Camera className="h-3.5 w-3.5" />
-                  View snapshot
+                  Ver captura
                 </button>
               )}
               <button
@@ -1365,7 +1360,7 @@ function BuildingItem({
                 }}
               >
                 <Camera className="h-3.5 w-3.5" />
-                {building.camera ? 'Update snapshot' : 'Take snapshot'}
+                {building.camera ? 'Actualizar captura' : 'Tomar captura'}
               </button>
               {building.camera && (
                 <button
@@ -1377,7 +1372,7 @@ function BuildingItem({
                   }}
                 >
                   <Trash2 className="h-3.5 w-3.5" />
-                  Clear snapshot
+                  Limpiar captura
                 </button>
               )}
             </div>
@@ -1459,14 +1454,14 @@ export function SitePanel({ projectId, onUploadAsset, onDeleteAsset }: SitePanel
           >
             <div className="flex items-center gap-2">
               <img
-                alt="Site"
+                alt="Sitio"
                 className={cn(
                   'h-5 w-5 object-contain transition-all',
                   phase !== 'site' && 'opacity-60 grayscale',
                 )}
                 src={withBasePath('/icons/site.png')}
               />
-              <span className="font-medium text-sm">{siteNode.name || 'Site'}</span>
+              <span className="font-medium text-sm">{siteNode.name || 'Sitio'}</span>
             </div>
             <CameraPopover
               buttonClassName={cn(
@@ -1504,7 +1499,7 @@ export function SitePanel({ projectId, onUploadAsset, onDeleteAsset }: SitePanel
           {/* Buildings List */}
           {buildings.length === 0 ? (
             <motion.div className="px-3 py-4 text-muted-foreground text-sm" layout="position">
-              No buildings yet
+              Aún no hay edificios
             </motion.div>
           ) : (
             <motion.div className="flex min-h-0 flex-1 flex-col" layout>

@@ -38,7 +38,7 @@ export function ZoneTreeNode({ node, depth, isLast }: ZoneTreeNodeProps) {
 
   // Calculate approximate area from polygon
   const area = calculatePolygonArea(node.polygon).toFixed(1)
-  const defaultName = `Zone (${area}m²)`
+  const defaultName = `Zona (${area}m²)`
 
   return (
     <TreeNodeWrapper

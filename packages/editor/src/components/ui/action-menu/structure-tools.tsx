@@ -19,15 +19,15 @@ export type ToolConfig = {
 }
 
 export const tools: ToolConfig[] = [
-  { id: 'wall', iconSrc: withBasePath('/icons/wall.png'), label: 'Wall' },
+  { id: 'wall', iconSrc: withBasePath('/icons/wall.png'), label: 'Muro' },
   // { id: 'room', iconSrc: '/icons/room.png', label: 'Room' },
   // { id: 'custom-room', iconSrc: '/icons/custom-room.png', label: 'Custom Room' },
-  { id: 'slab', iconSrc: withBasePath('/icons/floor.png'), label: 'Slab' },
-  { id: 'ceiling', iconSrc: withBasePath('/icons/ceiling.png'), label: 'Ceiling' },
-  { id: 'roof', iconSrc: withBasePath('/icons/roof.png'), label: 'Gable Roof' },
-  { id: 'door', iconSrc: withBasePath('/icons/door.png'), label: 'Door' },
-  { id: 'window', iconSrc: withBasePath('/icons/window.png'), label: 'Window' },
-  { id: 'zone', iconSrc: withBasePath('/icons/zone.png'), label: 'Zone' },
+  { id: 'slab', iconSrc: withBasePath('/icons/floor.png'), label: 'Losa' },
+  { id: 'ceiling', iconSrc: withBasePath('/icons/ceiling.png'), label: 'Cielo raso' },
+  { id: 'roof', iconSrc: withBasePath('/icons/roof.png'), label: 'Techo a dos aguas' },
+  { id: 'door', iconSrc: withBasePath('/icons/door.png'), label: 'Puerta' },
+  { id: 'window', iconSrc: withBasePath('/icons/window.png'), label: 'Ventana' },
+  { id: 'zone', iconSrc: withBasePath('/icons/zone.png'), label: 'Zona' },
 ]
 
 export function StructureTools() {

@@ -89,7 +89,7 @@ const commitWallDrawing = (start: [number, number], end: [number, number]) => {
   if (!currentLevelId) return
 
   const wallCount = Object.values(nodes).filter((n) => n.type === 'wall').length
-  const name = `Wall ${wallCount + 1}`
+  const name = `Muro ${wallCount + 1}`
 
   const wall = WallNode.parse({ name, start, end })
 
