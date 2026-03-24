@@ -443,6 +443,30 @@ Aplicar
 <rewrite>
   <rules>
 
+        <!-- Next image optimizer detrás de basePath -->
+        <rule name="ReverseProxy_3DEditor_NextImage" stopProcessing="true">
+            <match url="^3d-editor/_next/image$" />
+            <action type="Rewrite" url="http://localhost:8030/3d-editor/_next/image" appendQueryString="true" />
+        </rule>
+
+        <!-- Assets públicos en subdirectorios (public/) -->
+        <rule name="ReverseProxy_3DEditor_PublicDirs" stopProcessing="true">
+            <match url="^(icons|items|audios|demos|fonts)/(.*)$" />
+            <action type="Rewrite" url="http://localhost:8030/3d-editor/{R:1}/{R:2}" appendQueryString="true" />
+        </rule>
+
+        <!-- Assets públicos en raíz (public/) -->
+        <rule name="ReverseProxy_3DEditor_PublicRootFiles" stopProcessing="true">
+            <match url="^(cursor\.svg|file-text\.svg|globe\.svg|next\.svg|pascal-logo-full\.svg|pascal-logo-shape\.svg|pascal\.svg|turborepo-dark\.svg|turborepo-light\.svg|vercel\.svg|window\.svg)$" />
+            <action type="Rewrite" url="http://localhost:8030/3d-editor/{R:1}" appendQueryString="true" />
+        </rule>
+
+        <!-- Favicon (apps/editor/app/favicon.ico) -->
+        <rule name="ReverseProxy_3DEditor_Favicon" stopProcessing="true">
+            <match url="^favicon\.ico$" />
+            <action type="Rewrite" url="http://localhost:8030/3d-editor/favicon.ico" appendQueryString="true" />
+        </rule>
+
     <rule name="ReverseProxy_3DEditor_Root" stopProcessing="true">
       <match url="^3d-editor$" />
       <action type="Rewrite" url="http://localhost:8030/3d-editor" appendQueryString="true" />
@@ -456,6 +480,14 @@ Aplicar
   </rules>
 </rewrite>
 ```
+
+### Assets cubiertos por estas reglas
+
+- Directorios: `/icons/*`, `/items/*`, `/audios/*`, `/demos/*`, `/fonts/*`
+- Archivos raíz: `/cursor.svg`, `/file-text.svg`, `/globe.svg`, `/next.svg`, `/pascal-logo-full.svg`, `/pascal-logo-shape.svg`, `/pascal.svg`, `/turborepo-dark.svg`, `/turborepo-light.svg`, `/vercel.svg`, `/window.svg`
+- Favicon: `/favicon.ico`
+
+> Si agregás nuevos archivos a `apps/editor/public`, actualizá la regla `ReverseProxy_3DEditor_PublicRootFiles`.
 
 ---
 
@@ -491,6 +523,7 @@ https://sugop-test.infraestructura.gob.ar/3d-editor
 * ARR no instalado
 * Proxy no habilitado
 * existe app `/3d-editor` en IIS
+* faltan reglas para `/_next/image` o assets públicos (`/icons/*`, etc.)
 
 ### 403
 
