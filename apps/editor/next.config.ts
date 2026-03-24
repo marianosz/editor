@@ -1,17 +1,12 @@
-import path from 'node:path'
 import type { NextConfig } from 'next'
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
-
 const nextConfig: NextConfig = {
-  basePath,
   devIndicators: false,
   typescript: {
     ignoreBuildErrors: true,
   },
   transpilePackages: ['three', '@pascal-app/viewer', '@pascal-app/core', '@pascal-app/editor'],
   turbopack: {
-    root: path.resolve(__dirname, '../..'),
     resolveAlias: {
       react: './node_modules/react',
       three: './node_modules/three',
@@ -27,8 +22,14 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: process.env.NEXT_PUBLIC_ASSETS_CDN_URL?.startsWith('http://localhost') ?? false,
     remotePatterns: [
-      { protocol: 'https', hostname: '**' },
-      { protocol: 'http', hostname: '**' },
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
     ],
   },
 }
