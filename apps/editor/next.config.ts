@@ -1,20 +1,9 @@
 import type { NextConfig } from 'next'
-import path from 'node:path'
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
-const workspaceRoot = path.resolve(__dirname, '../..')
 
 const nextConfig: NextConfig = {
   basePath,
-  output: 'standalone',
-  outputFileTracingRoot: workspaceRoot,
-  outputFileTracingIncludes: {
-    '/*': [
-      '../editor/**/*',
-      '../viewer/**/*',
-      '../core/**/*',
-    ],
-  },
   devIndicators: false,
   typescript: {
     ignoreBuildErrors: true,
