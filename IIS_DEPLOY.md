@@ -115,9 +115,6 @@ pipeline {
           # Public assets
           cp -R apps/editor/public deploy/apps/editor/
 
-          # IIS iisnode rules
-          cp apps/editor/web.config deploy/web.config
-
           cd deploy
           zip -r ../3d-editor-deploy.zip .
         '''
@@ -150,58 +147,10 @@ El ZIP final debe contener:
 - `server.js` (raíz)
 - `apps/editor/.next/static`
 - `apps/editor/public`
-- `web.config`
 
 ---
 
-## 6) `web.config` para el subsitio IIS (iisnode)
-
-Crear `apps/editor/web.config` (y copiar al artifact final):
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <system.webServer>
-    <handlers>
-      <add name="iisnode" path="server.js" verb="*" modules="iisnode" />
-    </handlers>
-
-    <rewrite>
-      <rules>
-        <rule name="StaticContent" stopProcessing="true">
-          <match url=".*" />
-          <conditions logicalGrouping="MatchAny">
-            <add input="{REQUEST_FILENAME}" matchType="IsFile" />
-            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" />
-          </conditions>
-          <action type="None" />
-        </rule>
-
-        <rule name="DynamicContent" stopProcessing="true">
-          <match url=".*" />
-          <action type="Rewrite" url="server.js" />
-        </rule>
-      </rules>
-    </rewrite>
-
-    <iisnode nodeProcessCountPerApplication="1" loggingEnabled="true" />
-
-    <webSocket enabled="true" />
-
-    <httpProtocol>
-      <customHeaders>
-        <remove name="X-Powered-By" />
-      </customHeaders>
-    </httpProtocol>
-  </system.webServer>
-</configuration>
-```
-
-> Este `web.config` se coloca en la raíz física del subsitio (ej: `C:\inetpub\3d-editor`).
-
----
-
-## 7) Crear subsitio en IIS
+## 6) Crear subsitio en IIS
 
 Ejemplo:
 
@@ -217,7 +166,7 @@ URL final:
 
 ---
 
-## 8) Ejecución con iisnode (sin servicio externo)
+## 7) Ejecución con iisnode (sin servicio externo)
 
 - No usar NSSM/PM2 para esta modalidad.
 - El proceso se administra desde el App Pool de IIS.
@@ -225,7 +174,7 @@ URL final:
 
 ---
 
-## 9) Checklist de validación post-deploy
+## 8) Checklist de validación post-deploy
 
 - Abre `https://tu-dominio.com/3d-editor` desde iframe de SUGOP.
 - Se recibe `sugop-3d-editor:open-context` correctamente.
@@ -236,7 +185,7 @@ URL final:
 
 ---
 
-## 10) Troubleshooting rápido
+## 9) Troubleshooting rápido
 
 ## 404 en `/_next/static/*`
 

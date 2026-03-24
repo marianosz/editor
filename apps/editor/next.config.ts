@@ -1,10 +1,13 @@
 import type { NextConfig } from 'next'
+import path from 'node:path'
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
+const workspaceRoot = path.resolve(__dirname, '../..')
 
 const nextConfig: NextConfig = {
   basePath,
   output: 'standalone',
+  outputFileTracingRoot: workspaceRoot,
   devIndicators: false,
   typescript: {
     ignoreBuildErrors: true,
@@ -26,14 +29,8 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: process.env.NEXT_PUBLIC_ASSETS_CDN_URL?.startsWith('http://localhost') ?? false,
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-      {
-        protocol: 'http',
-        hostname: '**',
-      },
+      { protocol: 'https', hostname: '**' },
+      { protocol: 'http', hostname: '**' },
     ],
   },
 }
