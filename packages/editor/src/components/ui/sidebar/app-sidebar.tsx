@@ -7,6 +7,7 @@ import {
   SidebarContent,
   SidebarHeader,
   useSidebarStore,
+  useSidebar,
 } from './../../../components/ui/primitives/sidebar'
 import { cn } from './../../../lib/utils'
 import { IconRail, type PanelId } from './icon-rail'
@@ -27,7 +28,7 @@ export function AppSidebar({
   sitePanelProps,
 }: AppSidebarProps) {
   const [activePanel, setActivePanel] = useState<PanelId>('site')
-  const [isCollapsed, setIsCollapsed] = useState(true)
+  const { open, setOpen } = useSidebar()
 
   useEffect(() => {
     // Widen default sidebar (288px → 432px) for better project title visibility
@@ -50,17 +51,17 @@ export function AppSidebar({
 
   const handlePanelChange = (panel: PanelId) => {
     if (panel === activePanel) {
-      setIsCollapsed((prev) => !prev)
+      setOpen(!open)
       return
     }
 
     setActivePanel(panel)
-    setIsCollapsed(false)
+    setOpen(true)
   }
 
   return (
     <>
-      <Sidebar className={cn('dark text-white')} variant="floating">
+      <Sidebar className={cn('dark text-white')} collapsible="icon" variant="floating">
         <div className="flex h-full">
           {/* Icon Rail */}
           <IconRail
@@ -70,12 +71,7 @@ export function AppSidebar({
           />
 
           {/* Panel Content */}
-          <div
-            className={cn(
-              'flex flex-1 flex-col overflow-hidden transition-[max-width,opacity] duration-200 ease-linear',
-              isCollapsed && 'pointer-events-none max-w-0 opacity-0',
-            )}
-          >
+          <div className="flex flex-1 flex-col overflow-hidden">
             {sidebarTop && (
               <SidebarHeader className="relative flex-col items-start justify-center gap-1 border-border/50 border-b px-3 py-3">
                 {sidebarTop}

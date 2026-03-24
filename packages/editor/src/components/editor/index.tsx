@@ -253,7 +253,7 @@ export default function Editor({
             <PanelManager />
             <HelperManager />
 
-            <SidebarProvider className="fixed z-20">
+            <SidebarProvider className="fixed z-20" defaultOpen={false}>
               <AppSidebar
                 appMenuButton={appMenuButton}
                 settingsPanelProps={{
